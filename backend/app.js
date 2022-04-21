@@ -16,6 +16,6 @@ app.use(rootRoutes);
 app.use(rootController.get404);
 
 // init
-app.listen(port, () => {
+app.listen(process.env.PORT || port, () => {
   console.log('Express Server listening on Port: ' + port)
 })
