@@ -1,5 +1,6 @@
 // Provide necessary models
 const Ticket = require('./../models/ticket')
+const ObjectId = require('mongodb').ObjectId
 
 // Find all tickets of the ticket collection
 exports.getAllTickets = (req, res, next) => {
@@ -61,6 +62,17 @@ exports.postEditTicket = (req, res, next) => {
       desc: desc,
       impact: impact
     })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+// Edit a ticket to tickets collection
+exports.postDeleteTicket = (req, res, next) => {
+  const id = req.body.id;
+
+  Ticket
+    .deleteOne({_id: new ObjectId(id)})
     .catch(err => {
       console.log(err);
     });

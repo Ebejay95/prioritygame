@@ -40,6 +40,7 @@ export class TicketEditComponent implements OnInit {
   }
 
   onSubmit(){
+    //TODO laden der Route abstimmen mit Observable
     if(this.ticketForm.valid){
       const formData = this.ticketForm.value;
       if(this.editing){
@@ -47,6 +48,7 @@ export class TicketEditComponent implements OnInit {
       } else {
         this.ticketService.addTicket(formData.title,formData.desc,0)
       }
+      this.router.navigate(['../'])
     }
   }
 }

@@ -60,4 +60,20 @@ export class TicketService {
         
     }
 
+    deleteTicket(id:string){
+        
+        // format data
+        let body = {
+            id: id
+        }
+
+        // send request
+        this.http.post('https://prioritygame.herokuapp.com/tickets/delete', body).subscribe(
+            (res:any) => {
+                console.log(res);
+            }
+        )
+        
+    }
+
 }
