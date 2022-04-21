@@ -3,10 +3,12 @@ const db = require('./util/database')
 const ticketRoutes = require('./routes/ticket.js')
 const rootRoutes = require('./routes/root.js')
 const rootController = require('./controllers/rootController')
+var cors = require('cors')
 
 // Config Server
 const app = express()
 const port = 3000
+app.use(cors())
 
 // Add Routing
 app.use(ticketRoutes);

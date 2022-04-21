@@ -22,9 +22,9 @@ export class TicketService {
         }
 
         // send request
-        this.http.post('https://prioritygame.herokuapp.com:3000/tickets/add', ticket).subscribe(
-            () => {
-                console.log('Ticket erstellt')
+        this.http.post('https://prioritygame.herokuapp.com/tickets/add', ticket).subscribe(
+            (res) => {
+                console.log(res)
             }
         );
         
