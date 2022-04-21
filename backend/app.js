@@ -6,7 +6,7 @@ const rootController = require('./controllers/rootController')
 
 // Config Server
 const app = express()
-const port = 3001
+const port = 3000
 
 // Add Routing
 app.use(ticketRoutes);
