@@ -3,12 +3,16 @@ const db = require('./util/database')
 const ticketRoutes = require('./routes/ticket.js')
 const rootRoutes = require('./routes/root.js')
 const rootController = require('./controllers/rootController')
+var bodyParser = require('body-parser')
+
 var cors = require('cors')
 
 // Config Server
 const app = express()
 const port = 3000
 app.use(cors())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 // Add Routing
 app.use(ticketRoutes);
