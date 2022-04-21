@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Ticket } from "./ticket.model";
 import { HttpClient } from '@angular/common/http';
+import { Observable, Subject } from "rxjs";
 
 @Injectable({providedIn: 'root'})
 
@@ -8,8 +9,15 @@ export class TicketService {
 
     constructor(private http:HttpClient){}
 
-    getTicket(id:number){
-        return new Ticket('Test', 'das ist ein Test', 4)
+    ticketsChanged = new Subject<Ticket[]>()
+
+    getTicket(ticketId:string){
+        return this.http.get('https://prioritygame.herokuapp.com/tickets/' + ticketId)
+    }
+
+    getAllTickets():Observable<Object>{
+        // provide observable
+        return this.http.get('https://prioritygame.herokuapp.com/tickets')
     }
 
     addTicket(title:string, desc:string, impact:number){
@@ -28,4 +36,5 @@ export class TicketService {
         )
         
     }
+
 }

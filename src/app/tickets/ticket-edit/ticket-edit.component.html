@@ -5,5 +5,5 @@
     <label for="desc">Beschreibung</label>
     <textarea id="desc" formControlName="desc" value="" class="form-control" rows="7"></textarea>
     <br>
-    <input type="submit" class="btn btn-primary" value="Ticket erstellen">
+    <input type="submit" class="btn btn-primary" [disabled]="!ticketForm.valid" value="Ticket erstellen">
 </form>

@@ -1,6 +1,7 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Ticket } from '../ticket.model';
 import { TicketService } from '../ticket.service';
 
@@ -17,27 +18,37 @@ export class TicketEditComponent implements OnInit {
   ticketTitle!:string
   ticketDesc!:string
   ticketImpact!:number
+  ticketForm!:FormGroup
+  ticketChanged!:Subscription
 
-  ticketForm:FormGroup = new FormGroup({
-    title: new FormControl(this.ticketTitle, [Validators.required]),
-    desc: new FormControl(this.ticketDesc, [Validators.required])
-  })
-
-  constructor(private route:ActivatedRoute, private ticketService:TicketService) { }
+  constructor(private route:ActivatedRoute, private ticketService:TicketService, private router:Router) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(
       params => {
         if(params['id']){
           this.editing = true;
-          this.editedTicket = this.ticketService.getTicket(params['id'])
+          this.ticketChanged = this.ticketService.getTicket(params['id']).subscribe(
+            (ticket:any) => {
+              this.editedTicket = ticket
+            }
+          )
+          this.ticketTitle = this.editedTicket.title
+          this.ticketDesc = this.editedTicket.desc
         }
       }
     )
+    this.ticketForm = new FormGroup({
+      title: new FormControl(this.ticketTitle, [Validators.required]),
+      desc: new FormControl(this.ticketDesc, [Validators.required])
+    })
   }
 
   onSubmit(){
-    const formData = this.ticketForm.value;
-    this.ticketService.addTicket(formData.title,formData.desc,0)
+    if(this.ticketForm.valid){
+      const formData = this.ticketForm.value;
+      this.ticketService.addTicket(formData.title,formData.desc,0)
+      this.router.navigate(['../'])
+    }
   }
 }

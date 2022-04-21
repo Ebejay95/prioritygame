@@ -9,6 +9,7 @@ import { TicketBoardComponent } from './tickets/ticket-board/ticket-board.compon
 import { TicketEditComponent } from './tickets/ticket-edit/ticket-edit.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ShortenPipe } from './pipes/shorten.pipe';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     HeaderComponent,
     TicketBoardComponent,
     TicketEditComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ShortenPipe
   ],
   imports: [
     BrowserModule,

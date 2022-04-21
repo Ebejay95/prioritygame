@@ -12,6 +12,17 @@ exports.getAllTickets = (req, res, next) => {
     });
 };
 
+// Find a ticket by id
+exports.getTicket = (req, res, next) => {
+  Ticket.findById(req.params.id)
+    .then(ticket => {
+      res.json(ticket);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
 // Find all tickets of the ticket collection
 exports.postAddTicket = (req, res, next) => {
     console.log(req.body)
