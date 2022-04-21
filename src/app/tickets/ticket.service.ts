@@ -15,14 +15,14 @@ export class TicketService {
     addTicket(title:string, desc:string, impact:number){
         
         // format data
-        let body = '{"title":"Test", "desc": "Testinhalt"}'
+        let body = {title:"Test", desc: "Testinhalt"}
 
         // send request
         this.http.post('https://prioritygame.herokuapp.com/tickets/add', body).subscribe(
-            (res) => {
-                console.log(res)
+            (res:any) => {
+                console.log(res);
             }
-        );
+        )
         
     }
 }

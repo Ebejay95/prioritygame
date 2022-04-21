@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Provide Authentication
-var mongoDB = 'mongodb+srv://hp24hoffentlichklapptdas:hp24hoffentlichklapptdas@prioritygame.8ujod.mongodb.net/test';
+var mongoDB = 'mongodb+srv://hp24hoffentlichklapptdas:hp24hoffentlichklapptdas@prioritygame.8ujod.mongodb.net/prioritygame';
 
 // Provide Connection
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true}, () => {
