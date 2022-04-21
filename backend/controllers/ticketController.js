@@ -14,8 +14,7 @@ exports.getAllTickets = (req, res, next) => {
 
 // Find all tickets of the ticket collection
 exports.postAddTicket = (req, res, next) => {
-    console.log(req.body.title)
-    console.log(req.body.desc)
+    console.log(req.body)
   const title = req.body.title;
   const desc = req.body.desc;
   const impact = (req.body.impact) ? req.body.impact : null
