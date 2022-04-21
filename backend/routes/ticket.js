@@ -11,6 +11,9 @@ router.get('/tickets/:id', ticketController.getTicket);
 // POST - add Ticket
 router.post('/tickets/add', ticketController.postAddTicket);
 
+// POST - edit Ticket
+router.post('/tickets/edit', ticketController.postEditTicket);
+
 // GET - tickets
 router.get('/tickets', ticketController.getAllTickets);
 

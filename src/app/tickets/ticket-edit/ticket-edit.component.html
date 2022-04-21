@@ -1,3 +1,5 @@
+<h2 *ngIf="editing">Ticket bearbeiten</h2>
+<h2 *ngIf="!editing">Neues Ticket erstellen</h2>
 <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
     <label for="title">Titel</label>
     <input id="title" formControlName="title" value="" class="form-control">
@@ -5,5 +7,6 @@
     <label for="desc">Beschreibung</label>
     <textarea id="desc" formControlName="desc" value="" class="form-control" rows="7"></textarea>
     <br>
-    <input type="submit" class="btn btn-primary" [disabled]="!ticketForm.valid" value="Ticket erstellen">
+    <input *ngIf="editing" type="submit" class="btn btn-primary" [disabled]="!ticketForm.valid" value="Ticket speichern">
+    <input *ngIf="!editing" type="submit" class="btn btn-primary" [disabled]="!ticketForm.valid" value="Ticket erstellen">
 </form>

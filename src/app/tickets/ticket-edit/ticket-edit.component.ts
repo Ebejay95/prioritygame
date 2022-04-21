@@ -13,11 +13,7 @@ import { TicketService } from '../ticket.service';
 export class TicketEditComponent implements OnInit {
 
   editing:boolean = false;
-  editedTicket!:Ticket;
-
-  ticketTitle!:string
-  ticketDesc!:string
-  ticketImpact!:number
+  editedTicket!:any 
   ticketForm!:FormGroup
   ticketChanged!:Subscription
 
@@ -30,25 +26,27 @@ export class TicketEditComponent implements OnInit {
           this.editing = true;
           this.ticketChanged = this.ticketService.getTicket(params['id']).subscribe(
             (ticket:any) => {
+              this.ticketForm.setValue({'title': ticket.title, 'desc': ticket.desc});
               this.editedTicket = ticket
             }
           )
-          this.ticketTitle = this.editedTicket.title
-          this.ticketDesc = this.editedTicket.desc
         }
       }
     )
     this.ticketForm = new FormGroup({
-      title: new FormControl(this.ticketTitle, [Validators.required]),
-      desc: new FormControl(this.ticketDesc, [Validators.required])
+      title: new FormControl('', [Validators.required]),
+      desc: new FormControl('', [Validators.required])
     })
   }
 
   onSubmit(){
     if(this.ticketForm.valid){
       const formData = this.ticketForm.value;
-      this.ticketService.addTicket(formData.title,formData.desc,0)
-      this.router.navigate(['../'])
+      if(this.editing){
+        this.ticketService.editTicket(this.editedTicket.id,formData.title,formData.desc,this.editedTicket.impact)
+      } else {
+        this.ticketService.addTicket(formData.title,formData.desc,0)
+      }
     }
   }
 }
