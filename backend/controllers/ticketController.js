@@ -56,7 +56,7 @@ exports.postAddTicket = (req, res, next) => {
 
 // Edit a ticket to tickets collection
 exports.postEditTicket = (req, res, next) => {
-  const id = req.body.id;
+  const id = req.body._id;
   const title = req.body.title;
   const desc = req.body.desc;
   const impact = (req.body.impact) ? req.body.impact : 0
@@ -90,7 +90,7 @@ exports.postEditTicket = (req, res, next) => {
 
 // Edit a ticket to tickets collection
 exports.postDeleteTicket = (req, res, next) => {
-  const id = req.body.id;
+  const id = req.body._id;
 
   console.log(id)
   console.log(new ObjectId(id))
@@ -115,7 +115,7 @@ exports.postDeleteTicket = (req, res, next) => {
 
 // Edit a tickets impact
 exports.postChangeImpactTicket = (req, res, next) => {
-  const id = req.body.id;
+  const id = req.body._id;
   const impact = (req.body.impact) ? req.body.impact : 0
   console.log(id)
   console.log(new ObjectId(id))
