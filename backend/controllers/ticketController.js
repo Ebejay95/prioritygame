@@ -63,10 +63,11 @@ exports.postEditTicket = (req, res, next) => {
 
   Ticket
     .updateOne({sku: id}, {
-      id: id,
-      title: title,
-      desc: desc,
-      impact: impact
+      $set: {
+        title: title,
+        desc: desc,
+        impact: impact
+      }
     })
     .then(
       () => {
