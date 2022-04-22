@@ -62,7 +62,7 @@ exports.postEditTicket = (req, res, next) => {
   const impact = (req.body.impact) ? req.body.impact : null
 
   Ticket
-    .updateOne({sku: id}, {
+    .updateOne({sku: new ObjectId(id)}, {
       $set: {
         title: title,
         desc: desc,
