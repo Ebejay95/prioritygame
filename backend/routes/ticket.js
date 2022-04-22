@@ -13,6 +13,9 @@ router.post('/tickets/edit', ticketController.postEditTicket);
 // POST - edit Ticket
 router.post('/tickets/delete', ticketController.postDeleteTicket);
 
+// POST - edit Ticket
+router.post('/tickets/change-impact', ticketController.postChangeImpactTicket);
+
 // GET - ticket by id
 router.get('/tickets/:id', ticketController.getTicket);
 

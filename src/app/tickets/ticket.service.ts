@@ -110,7 +110,7 @@ export class TicketService {
         }
 
         // send request
-        this.http.post('https://prioritygame.herokuapp.com/tickets/edit', body).subscribe(
+        this.http.post('https://prioritygame.herokuapp.com/tickets/change-impact', body).subscribe(
             (tickets:any) => {
                this.tickets = tickets
                this.ticketsChanged.next(this.tickets.slice()) 

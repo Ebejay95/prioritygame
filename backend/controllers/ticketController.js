@@ -108,3 +108,31 @@ exports.postDeleteTicket = (req, res, next) => {
       console.log(err);
     });
 };
+
+// Edit a tickets impact
+exports.postChangeImpactTicket = (req, res, next) => {
+  const id = req.body.id;
+  const impact = (req.body.impact) ? req.body.impact : 0
+
+  Ticket
+    .updateOne({sku: id}, {
+      $set: {
+        impact: impact
+      }
+    })
+    .then(
+      () => {
+        //provide updated tickets
+        Ticket.find()
+          .then(tickets => {
+            res.json(tickets);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    )
+    .catch(err => {
+      console.log(err);
+    });
+};
