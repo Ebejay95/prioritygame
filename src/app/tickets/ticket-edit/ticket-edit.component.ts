@@ -17,7 +17,7 @@ export class TicketEditComponent implements OnInit {
   editing:boolean = false;
   editedTicket!:any 
   ticketForm!:FormGroup
-  ticketsChanged = new Subject<Ticket[]>()
+  ticketSubscription!:Subscription
 
   constructor(private route:ActivatedRoute, private ticketService:TicketService, private router:Router) { }
 
@@ -46,19 +46,32 @@ export class TicketEditComponent implements OnInit {
     if(this.ticketForm.valid){
       const formData = this.ticketForm.value;
       if(this.editing){
-        this.ticketService.editTicket(this.editedTicket.id,formData.title,formData.desc,this.editedTicket.impact).subscribe(
-          () => {
-            this.ticketService.getAllTickets().subscribe(
-              (tickets:any) => {
-                this.tickets = tickets
-                this.ticketsChanged.next(this.tickets.slice())
-              }
-            )
+        this.ticketService.editTicket(this.editedTicket.id,formData.title,formData.desc,this.editedTicket.impact)
+        this.ticketSubscription = this.ticketService.ticketsChanged.subscribe(
+          tickets => {
+            this.tickets = tickets
+          },
+          error => {
+            console.log(error)
           }
         )
       } else {
         this.ticketService.addTicket(formData.title,formData.desc,0)
+        this.ticketSubscription = this.ticketService.ticketsChanged.subscribe(
+          tickets => {
+            this.tickets = tickets
+          },
+          error => {
+            console.log(error)
+          }
+        )
       }
+      this.router.navigate(['../'])
     }
+  }
+
+  ngOnDestroy(){
+    if(this.ticketSubscription)
+    this.ticketSubscription.unsubscribe()
   }
 }

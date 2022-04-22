@@ -1,12 +1,19 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnInit } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from "rxjs";
+import { Subject } from "rxjs";
+import { Ticket } from "./ticket.model";
 
 @Injectable({providedIn: 'root'})
 
 export class TicketService {
 
     constructor(private http:HttpClient){}
+    ticketsChanged = new Subject<Ticket[]>()
+    tickets:Ticket[] = []
+
+    ngOnInit(){
+        
+    }
 
     getTicket(ticketId:string){
 
@@ -14,10 +21,17 @@ export class TicketService {
 
     }
 
-    getAllTickets():Observable<Object>{
+    getAllTickets(){
 
-        // provide observable
-        return this.http.get('https://prioritygame.herokuapp.com/tickets')
+        this.http.get('https://prioritygame.herokuapp.com/tickets').subscribe(
+            (tickets:any) => {
+               this.tickets = tickets
+               this.ticketsChanged.next(this.tickets.slice()) 
+            },
+            error => {
+              console.log(error)
+            }
+        )
 
     }
 
@@ -31,14 +45,18 @@ export class TicketService {
 
         // send request
         this.http.post('https://prioritygame.herokuapp.com/tickets/add', body).subscribe(
-            (res) => {
-                console.log(res)
+            (tickets:any) => {
+               this.tickets = tickets
+               this.ticketsChanged.next(this.tickets.slice()) 
+            },
+            error => {
+              console.log(error)
             }
         )
         
     }
 
-    editTicket(id:string, title:string, desc:string, impact:number):Observable<Object>{
+    editTicket(id:string, title:string, desc:string, impact:number){
         
         // format data
         let body = {
@@ -47,9 +65,17 @@ export class TicketService {
             desc: desc,
             impact: impact
         }
-
+    
         // send request
-        return this.http.post('https://prioritygame.herokuapp.com/tickets/edit', body)
+        this.http.post('https://prioritygame.herokuapp.com/tickets/edit', body).subscribe(
+            (tickets:any) => {
+               this.tickets = tickets
+               this.ticketsChanged.next(this.tickets.slice()) 
+            },
+            error => {
+              console.log(error)
+            }
+        )
         
     }
 
@@ -62,16 +88,37 @@ export class TicketService {
 
         // send request
         this.http.post('https://prioritygame.herokuapp.com/tickets/delete', body).subscribe(
-            (res:any) => {
-                console.log(res);
+            (tickets:any) => {
+               this.tickets = tickets
+               this.ticketsChanged.next(this.tickets.slice()) 
+            },
+            error => {
+              console.log(error)
             }
         )
         
     }
 
     setTicketImpact(ticket:any, impact:number){
-        this.editTicket(ticket._id, ticket.title, ticket.desc, impact)
 
+        // format data
+        let body = {
+            id: ticket._id,
+            title: ticket.title, 
+            desc: ticket.desc,
+            impact: impact
+        }
+
+        // send request
+        this.http.post('https://prioritygame.herokuapp.com/tickets/edit', body).subscribe(
+            (tickets:any) => {
+               this.tickets = tickets
+               this.ticketsChanged.next(this.tickets.slice()) 
+            },
+            error => {
+              console.log(error)
+            }
+        )
     }
 
 }

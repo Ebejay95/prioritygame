@@ -16,6 +16,6 @@
         <h4>{{ pTicket.title | shorten:13 }}</h4>
         <p>{{ pTicket.desc | shorten:25 }}</p>
         <button class="btn btn-primary" type="button" (click)="onEditTicket(pTicket)">&#9998;</button>
-        <button class="btn btn-danger" type="button" (click)="onDeleteTicket(pTicket)">&#10005;</button>
+        <button class="btn" type="button" (click)="onResetImpactTicket(pTicket)">&#9986;</button>
     </div>
 </div>

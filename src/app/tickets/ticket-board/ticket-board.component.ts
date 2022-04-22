@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy} from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { Ticket } from '../ticket.model';
@@ -12,41 +12,41 @@ import { TicketService } from '../ticket.service';
 export class TicketBoardComponent implements OnInit {
 
   constructor(private ticketService: TicketService, private router:Router) { }
-  ticketSubscription!: Subscription
   tickets!:Ticket[]
   newTickets:Ticket[] = []
   processedTickets!:Ticket[]
   ticketRows:[Ticket[], Ticket[], Ticket[], Ticket[], Ticket[], Ticket[], Ticket[], Ticket[], Ticket[], Ticket[]] = [[],[],[],[],[],[],[],[],[],[]]
   visitedTicketRow!:number
   draggedTicket!:Ticket
+  ticketSubscription!:Subscription
 
-  ticketsChanged = new Subject<Ticket[]>()
   ngOnInit(): void {
     
-    this.ticketSubscription = this.ticketService.getAllTickets().subscribe(
-      (tickets:any) => {
-        
-        // provide tickets for ticketboard
-        this.tickets = tickets
-
-        // filter new tickets
-        this.newTickets = this.tickets.filter(ticket => ticket.impact === null)
-        
-        // filter processed tickets
-        this.processedTickets = this.tickets.filter(ticket => ticket.impact)
-        this.spreadProccessedTicketsOnRows(this.processedTickets)
-      }
-    );
+    this.ticketService.getAllTickets()
+    this.ticketSubscription = this.ticketService.ticketsChanged.subscribe(
+       (tickets:any) => {
+        this.spreadProccessedTicketsOnRows(tickets)
+       },
+       error => {
+         console.log(error)
+       }
+    )
   }
 
   onEditTicket(ticket:any){ // Hier sei angemerkt, dass ich den Type für Typescript mit der uniquid von mongo nicht im Model eingebaut habe und das deshalb hier sonst einen Error wirft. Ehrlich gesagt wusste ich keinen anderen Workaround...
     this.router.navigate(['ticket/edit/' + ticket._id.toString()])
-    this.ticketsChanged.next(this.tickets.slice())
   }
 
   onDeleteTicket(ticket:any){ // Hier sei angemerkt, dass ich den Type für Typescript mit der uniquid von mongo nicht im Model eingebaut habe und das deshalb hier sonst einen Error wirft. Ehrlich gesagt wusste ich keinen anderen Workaround...
     this.ticketService.deleteTicket(ticket._id)
-    this.ticketsChanged.next(this.tickets.slice())
+    this.ticketSubscription = this.ticketService.ticketsChanged.subscribe(
+      (tickets:any) => {
+        this.spreadProccessedTicketsOnRows(tickets)
+      },
+      error => {
+        console.log(error)
+      }
+    )
   }
 
   onDragStart(ticket:Ticket){
@@ -64,14 +64,20 @@ export class TicketBoardComponent implements OnInit {
 
   onDragEnd(){
     this.moveTicket(this.draggedTicket, this.visitedTicketRow)
-    this.ticketsChanged.next(this.tickets.slice())
   }
 
-  ngOnDestroy(): void {
-    this.ticketSubscription.unsubscribe()
-  }
+  spreadProccessedTicketsOnRows(tickets:Ticket[]){
+    // provide tickets for ticketboard
+    this.tickets = tickets
 
-  spreadProccessedTicketsOnRows(processedTickets:Ticket[]){
+    //reset ticketRows
+    this.ticketRows = [[],[],[],[],[],[],[],[],[],[]]
+    
+    // filter new tickets
+    this.newTickets = this.tickets.filter(ticket => ticket.impact === null)
+    
+    // filter processed tickets
+    this.processedTickets = this.tickets.filter(ticket => ticket.impact)
     this.processedTickets.forEach(
       ticket => {
         const rowIndex = ticket.impact - 1;
@@ -81,8 +87,16 @@ export class TicketBoardComponent implements OnInit {
   }
 
   moveTicket(ticket:Ticket, row:number){
-    if(ticket && row){
-      this.ticketService.setTicketImpact(ticket, row)
-    }
+    // send value to backend for updates
+    this.ticketService.setTicketImpact(ticket, row)
+  }
+  
+  onResetImpactTicket(ticket:Ticket){
+    this.moveTicket(ticket, 0)
+  }
+
+  ngOnDestroy(){
+    if(this.ticketSubscription)
+    this.ticketSubscription.unsubscribe()
   }
 }

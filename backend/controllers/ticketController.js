@@ -60,12 +60,6 @@ exports.postEditTicket = (req, res, next) => {
   const title = req.body.title;
   const desc = req.body.desc;
   const impact = (req.body.impact) ? req.body.impact : null
-  
-  const ticket = new Ticket({
-    title: title,
-    desc: desc,
-    impact: impact,
-  });
 
   Ticket
     .updateOne({sku: id}, {
