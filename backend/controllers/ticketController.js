@@ -61,6 +61,7 @@ exports.postEditTicket = (req, res, next) => {
   const desc = req.body.desc;
   const impact = (req.body.impact) ? req.body.impact : 0
 
+  console.log(req)
   console.log(id)
   console.log(new ObjectId(id))
   Ticket
@@ -92,6 +93,7 @@ exports.postEditTicket = (req, res, next) => {
 exports.postDeleteTicket = (req, res, next) => {
   const id = req.body._id;
 
+  console.log(req)
   console.log(id)
   console.log(new ObjectId(id))
   Ticket
@@ -117,6 +119,7 @@ exports.postDeleteTicket = (req, res, next) => {
 exports.postChangeImpactTicket = (req, res, next) => {
   const id = req.body._id;
   const impact = (req.body.impact) ? req.body.impact : 0
+  console.log(req)
   console.log(id)
   console.log(new ObjectId(id))
   Ticket
