@@ -25,7 +25,7 @@ export class TicketBoardComponent implements OnInit{
   ticketSubscription!:Subscription
   constructor(private ticketService: TicketService, private router:Router) { }
 
-  
+
   /**
   * Oninit - Lifcycle funtion
   * Get tickets, build board, and populate the tickets by impact
@@ -117,6 +117,7 @@ export class TicketBoardComponent implements OnInit{
     // send drop to db
     let droppedTicket = event.container.data[0]
     let newImpact = event.container.element.nativeElement.getAttribute('data-target')
+    console.log(newImpact)
     this.ticketService.setTicketImpact(droppedTicket, newImpact)
   }
 
