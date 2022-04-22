@@ -1,7 +1,7 @@
-<div class="new-tickets-section">
-    <span>Es gibt neue Tickets</span>
+<div class="new-tickets-section" *ngIf="newTickets.length > 0">
+    <span>NEU</span>
     <div class="new-ticket-row">
-        <div *ngFor="let newTicket of newTickets" class="ticket" draggable="true" (dragstart)="onDragStart()" (dragend)="onDragEnd()">
+        <div *ngFor="let newTicket of newTickets" class="ticket" draggable="true" (dragstart)="onDragStart(newTicket)" (dragend)="onDragEnd()">
             <h4>{{ newTicket.title | shorten:13 }}</h4>
             <p>{{ newTicket.desc | shorten:25 }}</p>
             <button class="btn btn-primary" type="button" (click)="onEditTicket(newTicket)">&#9998;</button>
@@ -10,39 +10,12 @@
     </div>
 </div>
 
-<div class="impact-row" (dragover)="onDragOver()">
-    <span>1</span>
-    <div *ngFor="let pTicket of processedTickets" class="ticket" draggable="true" (dragstart)="onDragStart()" (dragend)="onDragEnd()">
+<div *ngFor="let ticketRow of ticketRows; let i = index" class="impact-row" attr.data-row-id="{{i+1}}" (dragover)="onDragOver($event)">
+    <span>{{i+1}}</span>
+    <div *ngFor="let pTicket of ticketRow" class="ticket" draggable="true" (dragstart)="onDragStart(pTicket)" (dragend)="onDragEnd()">
         <h4>{{ pTicket.title | shorten:13 }}</h4>
         <p>{{ pTicket.desc | shorten:25 }}</p>
         <button class="btn btn-primary" type="button" (click)="onEditTicket(pTicket)">&#9998;</button>
         <button class="btn btn-danger" type="button" (click)="onDeleteTicket(pTicket)">&#10005;</button>
     </div>
-</div>
-<div class="impact-row" (dragover)="onDragOver()">
-    <span>2</span>
-</div>
-<div class="impact-row" (dragover)="onDragOver()">
-    <span>3</span>
-</div>
-<div class="impact-row" (dragover)="onDragOver()">
-    <span>4</span>
-</div>
-<div class="impact-row" (dragover)="onDragOver()">
-    <span>5</span>
-</div>
-<div class="impact-row" (dragover)="onDragOver()">
-    <span>6</span>
-</div>
-<div class="impact-row" (dragover)="onDragOver()">
-    <span>7</span>
-</div>
-<div class="impact-row" (dragover)="onDragOver()">
-    <span>8</span>
-</div>
-<div class="impact-row" (dragover)="onDragOver()">
-    <span>9</span>
-</div>
-<div class="impact-row" (dragover)="onDragOver()">
-    <span>10</span>
 </div>

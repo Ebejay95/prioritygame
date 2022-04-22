@@ -8,22 +8,21 @@
 
 .impact-row {
     box-sizing: content-box;
-    min-height: 4vh;
+    min-height: 50px;
     box-shadow: inset;
-    background: #eee;
+    background: #f9f9f9;
     position: relative;
     margin-block-end: 5px;
-    border-top: solid 4px white;
-    border-bottom: solid 4px white;
     transition: 0.2s;
-    padding: 10px 10px 10px 50px;
+    padding: 2px 10px 2px 35px;
     user-select: none;
+    border-radius: 4px;
+    -webkit-box-shadow: 0px 0px 3px 2px #ccc inset; 
+    box-shadow: 0px 0px 2px 2px #ccc inset;
 }
 .impact-row.is-dragged-over{
-    border-top: solid 4px #eee;
-    border-bottom: solid 4px #eee;
-    -webkit-box-shadow: 0px 0px 3px 2px #CCCCCC; 
-    box-shadow: 0px 0px 3px 2px #CCCCCC;
+    -webkit-box-shadow: 0px 0px 3px 2px #ccc; 
+    box-shadow: 0px 0px 3px 2px #ccc;
 }
 .impact-row span {
     font-size: 3vh;
@@ -31,21 +30,28 @@
     top: 50%;
     left: 5px;
     transform: translateY(-50%);
+    color:#bbb
 }
 
 .new-tickets-section {
     background-color: palegreen;
     margin-block-end: 15px;
     user-select: none;
+    position:relative;
 }
 
 .new-tickets-section span {
+    color: green;
+    position: absolute;
     padding: 6px;
+    transform: rotate(-90deg);
+    top: 13px;
+    left: -8px;
 }
 
 .new-tickets-section .new-ticket-row {
     box-sizing: content-box;
-    padding: 10px 10px 10px 50px;
+    padding: 2px 10px 2px 35px;
 }
 
 .ticket {
@@ -53,13 +59,20 @@
     border-radius: 4px;
     -webkit-box-shadow: 0px 0px 3px 2px #CCCCCC; 
     box-shadow: 0px 0px 3px 2px #CCCCCC;
-    padding: 5px 8px;
+    padding: 0px 8px;
     position: relative;
     display: inline-block;
     margin: 5px;
     user-select: none;
     min-width: 200px;
 }
+.ticket h4 {
+    font-size: 14px;
+}
+.ticket p {
+    font-size: 10px;
+}
+
 .ticket button.btn.btn-danger {
     position: absolute;
     padding: 0 3px;
@@ -72,4 +85,12 @@
     padding: 0 3px;
     top:5px;
     right:29px;
+}
+h1,h2,h3,h4,h5,h6 {
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+p {
+    margin-top: 0;
+    margin-bottom: 5px;
 }

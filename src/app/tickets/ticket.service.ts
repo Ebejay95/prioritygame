@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Ticket } from "./ticket.model";
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from "rxjs";
 
@@ -8,8 +7,6 @@ import { Observable, Subject } from "rxjs";
 export class TicketService {
 
     constructor(private http:HttpClient){}
-
-    ticketsChanged = new Subject<Ticket[]>()
 
     getTicket(ticketId:string){
 
@@ -34,14 +31,14 @@ export class TicketService {
 
         // send request
         this.http.post('https://prioritygame.herokuapp.com/tickets/add', body).subscribe(
-            (res:any) => {
-                console.log(res);
+            (res) => {
+                console.log(res)
             }
         )
         
     }
 
-    editTicket(id:string, title:string, desc:string, impact:number){
+    editTicket(id:string, title:string, desc:string, impact:number):Observable<Object>{
         
         // format data
         let body = {
@@ -52,11 +49,7 @@ export class TicketService {
         }
 
         // send request
-        this.http.post('https://prioritygame.herokuapp.com/tickets/edit', body).subscribe(
-            (res:any) => {
-                console.log(res);
-            }
-        )
+        return this.http.post('https://prioritygame.herokuapp.com/tickets/edit', body)
         
     }
 
@@ -74,6 +67,11 @@ export class TicketService {
             }
         )
         
+    }
+
+    setTicketImpact(ticket:any, impact:number){
+        this.editTicket(ticket._id, ticket.title, ticket.desc, impact)
+
     }
 
 }

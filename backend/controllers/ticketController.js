@@ -37,6 +37,10 @@ exports.postAddTicket = (req, res, next) => {
   });
   ticket
     .save()
+    .then(()=>
+
+    // send success
+    res.sendStatus(200))
     .catch(err => {
       console.log(err);
     });
@@ -62,6 +66,10 @@ exports.postEditTicket = (req, res, next) => {
       desc: desc,
       impact: impact
     })
+    .then(()=>
+
+    // send success
+    res.sendStatus(200))
     .catch(err => {
       console.log(err);
     });
@@ -73,6 +81,10 @@ exports.postDeleteTicket = (req, res, next) => {
 
   Ticket
     .deleteOne({_id: new ObjectId(id)})
+    .then(()=>
+
+    // send success
+    res.sendStatus(200))
     .catch(err => {
       console.log(err);
     });

@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { Ticket } from '../ticket.model';
 import { TicketService } from '../ticket.service';
 
@@ -12,10 +12,12 @@ import { TicketService } from '../ticket.service';
 })
 export class TicketEditComponent implements OnInit {
 
+  @Output() tickets:Ticket[] = []
+
   editing:boolean = false;
   editedTicket!:any 
   ticketForm!:FormGroup
-  ticketChanged!:Subscription
+  ticketsChanged = new Subject<Ticket[]>()
 
   constructor(private route:ActivatedRoute, private ticketService:TicketService, private router:Router) { }
 
@@ -24,7 +26,7 @@ export class TicketEditComponent implements OnInit {
       params => {
         if(params['id']){
           this.editing = true;
-          this.ticketChanged = this.ticketService.getTicket(params['id']).subscribe(
+          this.ticketService.getTicket(params['id']).subscribe(
             (ticket:any) => {
               this.ticketForm.setValue({'title': ticket.title, 'desc': ticket.desc});
               this.editedTicket = ticket
@@ -44,11 +46,19 @@ export class TicketEditComponent implements OnInit {
     if(this.ticketForm.valid){
       const formData = this.ticketForm.value;
       if(this.editing){
-        this.ticketService.editTicket(this.editedTicket.id,formData.title,formData.desc,this.editedTicket.impact)
+        this.ticketService.editTicket(this.editedTicket.id,formData.title,formData.desc,this.editedTicket.impact).subscribe(
+          () => {
+            this.ticketService.getAllTickets().subscribe(
+              (tickets:any) => {
+                this.tickets = tickets
+                this.ticketsChanged.next(this.tickets.slice())
+              }
+            )
+          }
+        )
       } else {
         this.ticketService.addTicket(formData.title,formData.desc,0)
       }
-      this.router.navigate(['../'])
     }
   }
 }
