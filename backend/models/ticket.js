@@ -1,6 +1,11 @@
-const mongoose = require('mongoose');
+/****************************************/
+/*  Ticket Model                        */
+/****************************************/
 
-const Schema = mongoose.Schema;
+
+// setup ticket shema
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const ticketSchema = new Schema({
   title: {
@@ -15,6 +20,7 @@ const ticketSchema = new Schema({
     type: Number,
     required: false
   }
-});
+})
 
-module.exports = mongoose.model('Ticket', ticketSchema);
+// export
+module.exports = mongoose.model('Ticket', ticketSchema)

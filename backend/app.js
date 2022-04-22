@@ -1,27 +1,42 @@
-const express = require('express')
-const db = require('./util/database')
-const ticketRoutes = require('./routes/ticket.js')
-const rootRoutes = require('./routes/root.js')
-const rootController = require('./controllers/rootController')
-var bodyParser = require('body-parser')
+/****************************************/
+/*  Priority Game Backend               */
+/* ____________________________________ */
+/* Author: Jonathan Eberle              */
+/****************************************/
 
+
+// provide imports for node with express
+const express = require('express')
+var bodyParser = require('body-parser')
 var cors = require('cors')
 
-// Config Server
+
+// setup database connection to mongo with mongoose
+const db = require('./util/database')
+
+
+// include routing
+const ticketRoutes = require('./routes/ticket.js')
+const generalRoutes = require('./routes/general.js')
+
+
+// config server
 const app = express()
 const port = 3000
+
+// enable http from and to different clients/servers
 app.use(cors())
+
+// setup body-parsing for http requests
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-// Add Routing
-app.use(ticketRoutes);
-app.use(rootRoutes);
+// add routes to server
+app.use(ticketRoutes)
+app.use(generalRoutes)
 
-// catch not found routes - 404
-app.use(rootController.get404);
 
-// init
+// init server
 app.listen(process.env.PORT || port, () => {
   console.log('Express Server listening on Port: ' + port)
 })

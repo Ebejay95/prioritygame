@@ -1,15 +1,17 @@
-const mongoose = require('mongoose');
+// import mongoose as ODM for mongoDB
+const mongoose = require('mongoose')
 
-// Provide Authentication
-var mongoDB = 'mongodb+srv://hp24hoffentlichklapptdas:hp24hoffentlichklapptdas@prioritygame.8ujod.mongodb.net/test';
+// provide authentication for mongoDB service
+const mongoDB = 'mongodb+srv://hp24hoffentlichklapptdas:hp24hoffentlichklapptdas@prioritygame.8ujod.mongodb.net/test'
 
-// Provide Connection
+// establish database connection
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true}, () => {
-  console.log('MongoDB connected!');
-});
-var db = mongoose.connection;
+  console.log('MongoDB connected!')
+})
 
-// catch error for devevlopment
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+const db = mongoose.connection
 
-module.exports = db;
+// catch errors
+db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+
+module.exports = db

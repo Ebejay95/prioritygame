@@ -1,25 +1,32 @@
-const express = require('express');
-const router = express.Router();
+/****************************************/
+/*  Ticket routes                       */
+/****************************************/
 
-// Provide Controllers
-const ticketController = require('../controllers/ticketController');
+
+// necessary routing imports
+const express = require('express')
+const router = express.Router()
+
+// provide controllers
+const ticketController = require('../controllers/ticketController')
 
 // POST - add Ticket
-router.post('/tickets/add', ticketController.postAddTicket);
+router.post('/tickets/add', ticketController.postAddTicket)
 
 // POST - edit Ticket
-router.post('/tickets/edit', ticketController.postEditTicket);
+router.post('/tickets/edit', ticketController.postEditTicket)
 
-// POST - edit Ticket
-router.post('/tickets/delete', ticketController.postDeleteTicket);
+// POST - delete Ticket
+router.post('/tickets/delete', ticketController.postDeleteTicket)
 
-// POST - edit Ticket
-router.post('/tickets/change-impact', ticketController.postChangeImpactTicket);
+// POST - change impact of Ticket
+router.post('/tickets/change-impact', ticketController.postChangeImpactTicket)
 
 // GET - ticket by id
-router.get('/tickets/:_id', ticketController.getTicket);
+router.get('/tickets/:_id', ticketController.getTicket)
 
-// GET - tickets
-router.get('/tickets', ticketController.getAllTickets);
+// GET - all tickets
+router.get('/tickets', ticketController.getAllTickets)
 
-module.exports = router;
+// export
+module.exports = router
