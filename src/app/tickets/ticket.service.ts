@@ -108,10 +108,10 @@ export class TicketService {
             desc: ticket.desc,
             impact: impact
         }
-
         // send request
         this.http.post('https://prioritygame.herokuapp.com/tickets/change-impact', body).subscribe(
             (tickets:any) => {
+                console.log(tickets)
                this.tickets = tickets
                this.ticketsChanged.next(this.tickets.slice()) 
             },

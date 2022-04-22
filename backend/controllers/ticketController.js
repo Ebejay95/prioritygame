@@ -29,7 +29,7 @@ exports.postAddTicket = (req, res, next) => {
   const title = req.body.title;
   const desc = req.body.desc;
   const impact = (req.body.impact) ? req.body.impact : 0
-  
+
   const ticket = new Ticket({
     title: title,
     desc: desc,
@@ -61,6 +61,7 @@ exports.postEditTicket = (req, res, next) => {
   const desc = req.body.desc;
   const impact = (req.body.impact) ? req.body.impact : 0
 
+  console.log(new ObjectId(id))
   Ticket
     .updateOne({_id: new ObjectId(id)}, {
       $set: {
@@ -90,6 +91,7 @@ exports.postEditTicket = (req, res, next) => {
 exports.postDeleteTicket = (req, res, next) => {
   const id = req.body.id;
 
+  console.log(new ObjectId(id))
   Ticket
     .deleteOne({_id: new ObjectId(id)})
     .then(
@@ -113,7 +115,7 @@ exports.postDeleteTicket = (req, res, next) => {
 exports.postChangeImpactTicket = (req, res, next) => {
   const id = req.body.id;
   const impact = (req.body.impact) ? req.body.impact : 0
-
+  console.log(new ObjectId(id))
   Ticket
     .updateOne({_id: new ObjectId(id)}, {
       $set: {

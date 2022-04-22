@@ -1,10 +1,9 @@
-import { IfStmt } from '@angular/compiler';
-import { Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Ticket } from '../ticket.model';
 import { TicketService } from '../ticket.service';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import { moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { Board } from '../board.model';
 import { Column } from '../column.model';
 
@@ -34,6 +33,7 @@ export class TicketBoardComponent implements OnInit{
         console.log(error)
       }
     )
+
   }
   
   buildBoard(tickets:Ticket[]){
@@ -80,6 +80,16 @@ export class TicketBoardComponent implements OnInit{
         event.currentIndex,
       );
     }
+
+    // send drop to db
+    let droppedTicket = event.container.data
+    let newImpact = this.cdkIdToInt(event.container.id)
+    this.moveTicket(droppedTicket, newImpact)
+  }
+
+  cdkIdToInt(cdkId:string){
+    let intId = parseInt(cdkId.replace('cdk-drop-list-',''));
+    return intId;
   }
   
   moveTicket(ticket:Ticket, impact:number){
