@@ -17,7 +17,7 @@ router.post('/tickets/delete', ticketController.postDeleteTicket);
 router.post('/tickets/change-impact', ticketController.postChangeImpactTicket);
 
 // GET - ticket by id
-router.get('/tickets/:id', ticketController.getTicket);
+router.get('/tickets/:_id', ticketController.getTicket);
 
 // GET - tickets
 router.get('/tickets', ticketController.getAllTickets);

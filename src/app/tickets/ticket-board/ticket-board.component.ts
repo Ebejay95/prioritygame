@@ -82,14 +82,9 @@ export class TicketBoardComponent implements OnInit{
     }
 
     // send drop to db
-    let droppedTicket = event.container.data
-    let newImpact = this.cdkIdToInt(event.container.id)
+    let droppedTicket = event.container.data[0]
+    let newImpact = event.container.element.nativeElement.getAttribute('data-target')
     this.moveTicket(droppedTicket, newImpact)
-  }
-
-  cdkIdToInt(cdkId:string){
-    let intId = parseInt(cdkId.replace('cdk-drop-list-',''));
-    return intId;
   }
   
   moveTicket(ticket:Ticket, impact:number){

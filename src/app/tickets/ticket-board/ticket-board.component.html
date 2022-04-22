@@ -6,13 +6,14 @@
         cdkDropList
         [cdkDropListData]="column.tickets"
         (cdkDropListDropped)="drop($event)"
+        [attr.data-target]="column.name"
     >
         <span>{{column.name}}</span>
         <div
             cdkDrag 
             *ngFor="let ticket of column.tickets" 
             class="ticket"
-            [cdkDragData]="ticket"
+            [cdkDragData]="[ticket]"
         >
             <h4>{{ticket.title | shorten:13}}</h4>
             <p>{{ticket.desc | shorten:16}}</p>

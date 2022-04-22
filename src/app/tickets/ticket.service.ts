@@ -56,11 +56,11 @@ export class TicketService {
         
     }
 
-    editTicket(id:string, title:string, desc:string, impact:number){
+    editTicket(_id:string, title:string, desc:string, impact:number){
         
         // format data
         let body = {
-            id: id,
+            _id: _id,
             title: title, 
             desc: desc,
             impact: impact
@@ -79,11 +79,11 @@ export class TicketService {
         
     }
 
-    deleteTicket(id:string){
+    deleteTicket(_id:string){
         
         // format data
         let body = {
-            id: id
+            _id: _id
         }
 
         // send request
@@ -103,11 +103,10 @@ export class TicketService {
 
         // format data
         let body = {
-            id: ticket._id,
-            title: ticket.title, 
-            desc: ticket.desc,
+            _id: ticket._id,
             impact: impact
         }
+
         // send request
         this.http.post('https://prioritygame.herokuapp.com/tickets/change-impact', body).subscribe(
             (tickets:any) => {

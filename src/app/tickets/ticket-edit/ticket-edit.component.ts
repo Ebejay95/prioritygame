@@ -46,7 +46,7 @@ export class TicketEditComponent implements OnInit {
     if(this.ticketForm.valid){
       const formData = this.ticketForm.value;
       if(this.editing){
-        this.ticketService.editTicket(this.editedTicket.id,formData.title,formData.desc,this.editedTicket.impact)
+        this.ticketService.editTicket(this.editedTicket._id,formData.title,formData.desc,this.editedTicket.impact)
         this.ticketSubscription = this.ticketService.ticketsChanged.subscribe(
           tickets => {
             this.tickets = tickets

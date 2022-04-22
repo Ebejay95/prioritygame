@@ -15,7 +15,7 @@ exports.getAllTickets = (req, res, next) => {
 
 // Find a ticket by id
 exports.getTicket = (req, res, next) => {
-  Ticket.findById(req.params.id)
+  Ticket.findById(req.params._id)
     .then(ticket => {
       res.json(ticket);
     })
@@ -56,16 +56,13 @@ exports.postAddTicket = (req, res, next) => {
 
 // Edit a ticket to tickets collection
 exports.postEditTicket = (req, res, next) => {
-  const id = req.body._id;
+  const _id = req.body._id;
   const title = req.body.title;
   const desc = req.body.desc;
   const impact = (req.body.impact) ? req.body.impact : 0
 
-  console.log(req)
-  console.log(id)
-  console.log(new ObjectId(id))
   Ticket
-    .updateOne({_id: new ObjectId(id)}, {
+    .updateOne({_id: new ObjectId(_id)}, {
       $set: {
         title: title,
         desc: desc,
@@ -91,13 +88,10 @@ exports.postEditTicket = (req, res, next) => {
 
 // Edit a ticket to tickets collection
 exports.postDeleteTicket = (req, res, next) => {
-  const id = req.body._id;
+  const _id = req.body._id;
 
-  console.log(req)
-  console.log(id)
-  console.log(new ObjectId(id))
   Ticket
-    .deleteOne({_id: new ObjectId(id)})
+    .deleteOne({_id: new ObjectId(_id)})
     .then(
       () => {
         //provide updated tickets
@@ -117,13 +111,11 @@ exports.postDeleteTicket = (req, res, next) => {
 
 // Edit a tickets impact
 exports.postChangeImpactTicket = (req, res, next) => {
-  const id = req.body._id;
+  const _id = req.body._id;
   const impact = (req.body.impact) ? req.body.impact : 0
-  console.log(req)
-  console.log(id)
-  console.log(new ObjectId(id))
+
   Ticket
-    .updateOne({_id: new ObjectId(id)}, {
+    .updateOne({_id: new ObjectId(_id)}, {
       $set: {
         impact: impact
       }
