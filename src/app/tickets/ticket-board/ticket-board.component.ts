@@ -74,7 +74,7 @@ export class TicketBoardComponent implements OnInit {
     this.ticketRows = [[],[],[],[],[],[],[],[],[],[]]
     
     // filter new tickets
-    this.newTickets = this.tickets.filter(ticket => ticket.impact === null)
+    this.newTickets = this.tickets.filter(ticket => ticket.impact === 0)
     
     // filter processed tickets
     this.processedTickets = this.tickets.filter(ticket => ticket.impact)
