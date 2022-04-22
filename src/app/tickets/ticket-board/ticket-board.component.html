@@ -1,24 +1,27 @@
-
 <div cdkDropListGroup>
-    <div
-        *ngFor="let column of board.columns; index as i"
-        [ngClass]="{'impact-row': column.name !== 'NEU' ,'new-tickets-section': column.name === 'NEU','no-new-tickets': column.tickets.length < 1 && i === 0}"
-        cdkDropList
-        [cdkDropListData]="column.tickets"
-        (cdkDropListDropped)="drop($event)"
-        [attr.data-target]="column.name"
-    >
-        <span>{{column.name}}</span>
-        <div
-            cdkDrag 
-            *ngFor="let ticket of column.tickets" 
-            class="ticket"
-            [cdkDragData]="[ticket]"
-        >
-            <h4>{{ticket.title | shorten:13}}</h4>
-            <p>{{ticket.desc | shorten:22}}</p>
-            <button class="btn btn-primary" type="button" (click)="onEditTicket(ticket)">&#9998;</button>
-            <button class="btn btn-danger" type="button" (click)="onDeleteTicket(ticket)">&#10005;</button>
-        </div>
-    </div>
+  <div
+    cdkDropList
+    [cdkDropListData]="column.tickets"
+    (cdkDropListDropped)="drop($event)"
+    [attr.data-target]="column.name"
+    *ngFor="let column of board.columns; index as i"
+    [ngClass]="{
+      'impact-row': column.name !== 'NEU',
+      'new-tickets-section': column.name === 'NEU',
+      'no-new-tickets': column.tickets.length < 1 && i === 0
+    }"
+  >
+      <span>{{column.name}}</span>
+      <div
+        cdkDrag 
+        *ngFor="let ticket of column.tickets" 
+        class="ticket"
+        [cdkDragData]="[ticket]"
+      >
+        <h4>{{ticket.title | shorten:13}}</h4>
+        <p>{{ticket.desc | shorten:22}}</p>
+        <button class="btn btn-primary" type="button" (click)="onEditTicket(ticket)">&#9998;</button>
+        <button class="btn btn-danger" type="button" (click)="onDeleteTicket(ticket)">&#10005;</button>
+      </div>
+  </div>
 </div>

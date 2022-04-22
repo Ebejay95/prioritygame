@@ -1,123 +1,146 @@
-import { Injectable, OnInit } from "@angular/core";
-import { HttpClient } from '@angular/common/http';
-import { Subject } from "rxjs";
-import { Ticket } from "./ticket.model";
+import { Injectable } from "@angular/core"
+import { HttpClient } from '@angular/common/http'
+import { Observable, Subject } from "rxjs"
+import { Ticket } from "../models/ticket.model"
 
 @Injectable({providedIn: 'root'})
 
 export class TicketService {
 
-    constructor(private http:HttpClient){}
-    ticketsChanged = new Subject<Ticket[]>()
-    tickets:Ticket[] = []
+  // subject to populate services data to any component
+  ticketsChanged = new Subject<Ticket[]>()
 
-    ngOnInit(){
-        
+  // general ticket array for service
+  tickets:Ticket[] = []
+
+  constructor(private http:HttpClient) { }
+
+  /**
+  * GET - ticket by id
+  * Return a observable a component can subscribe to
+  * @param    {string}      ticketId   tickets id
+  * @return   {Observable}  get from HttpClient
+  */
+  getTicket(ticketId:string): Observable<Object> {
+    return this.http.get('https://prioritygame.herokuapp.com/tickets/' + ticketId)
+  }
+
+
+  /**
+  * GET - alltickets
+  * @next {Ticket[]}  tickets from express backend server
+  */
+  getAllTickets(): void {
+    this.http.get('https://prioritygame.herokuapp.com/tickets')
+      .subscribe(
+        (tickets:any) => {
+          this.tickets = tickets
+          this.ticketsChanged.next(this.tickets.slice()) 
+        },
+        error => { console.log(error) }
+      )
+  }
+
+
+  /**
+  * POST - add a ticket
+  * @param  {string}  title   tickets title
+  * @param  {string}  desc    tickets desc
+  * @next {Ticket[]}  updated tickets from express backend server
+  */
+  addTicket(title:string, desc:string): void {
+    // provide http body for request
+    let body = {
+        title: title, 
+        desc: desc
     }
 
-    getTicket(ticketId:string){
+    // send request and provide result data
+    this.http.post('https://prioritygame.herokuapp.com/tickets/add', body)
+      .subscribe(
+        (tickets:any) => {
+           this.tickets = tickets
+           this.ticketsChanged.next(this.tickets.slice()) 
+        },
+        error => { console.log(error) }
+      )  
+  }
 
-        return this.http.get('https://prioritygame.herokuapp.com/tickets/' + ticketId)
 
+  /**
+  * POST - edit a ticket
+  * @param  {string}  _id     tickets _id (mongoDB)
+  * @param  {string}  title   tickets title
+  * @param  {string}  desc    tickets desc
+  * @param  {string}  impact  tickets impact
+  * @next {Ticket[]}  updated tickets from express backend server
+  */
+  editTicket(_id:string, title:string, desc:string, impact:number): void {
+    // provide http body for request
+    let body = {
+      _id: _id,
+      title: title, 
+      desc: desc,
+      impact: impact
+    }
+  
+    // send request and provide result data
+    this.http.post('https://prioritygame.herokuapp.com/tickets/edit', body)
+      .subscribe(
+        (tickets:any) => {
+          this.tickets = tickets
+          this.ticketsChanged.next(this.tickets.slice()) 
+        },
+        error => { console.log(error) }
+      )   
+  }
+
+
+  /**
+  * POST - delete a ticket
+  * @param  {string}  _id     tickets _id (mongoDB)
+  * @next {Ticket[]}  updated tickets from express backend server
+  */
+  deleteTicket(_id:string): void {
+    // provide http body for request
+    let body = {
+        _id: _id
     }
 
-    getAllTickets(){
+    // send request and provide result data
+    this.http.post('https://prioritygame.herokuapp.com/tickets/delete', body)
+      .subscribe(
+        (tickets:any) => {
+          this.tickets = tickets
+          this.ticketsChanged.next(this.tickets.slice()) 
+        },
+        error => { console.log(error) }
+    )  
+  }
 
-        this.http.get('https://prioritygame.herokuapp.com/tickets').subscribe(
-            (tickets:any) => {
-               this.tickets = tickets
-               this.ticketsChanged.next(this.tickets.slice()) 
-            },
-            error => {
-              console.log(error)
-            }
-        )
 
+  /**
+  * POST - edit a tickets impact
+  * @param  {any}     ticket  (Ticket) interference beacause of _id (mongoDB - not in model)
+  * @param  {string}  impact  tickets impact
+  * @next {Ticket[]}  updated tickets from express backend server
+  */
+  setTicketImpact(ticket:any, impact:number): void {
+    // provide http body for request
+    let body = {
+        _id: ticket._id,
+        impact: impact
     }
 
-    addTicket(title:string, desc:string, impact:number){
-        
-        // format data
-        let body = {
-            title: title, 
-            desc: desc
-        }
-
-        // send request
-        this.http.post('https://prioritygame.herokuapp.com/tickets/add', body).subscribe(
-            (tickets:any) => {
-               this.tickets = tickets
-               this.ticketsChanged.next(this.tickets.slice()) 
-            },
-            error => {
-              console.log(error)
-            }
-        )
-        
-    }
-
-    editTicket(_id:string, title:string, desc:string, impact:number){
-        
-        // format data
-        let body = {
-            _id: _id,
-            title: title, 
-            desc: desc,
-            impact: impact
-        }
-    
-        // send request
-        this.http.post('https://prioritygame.herokuapp.com/tickets/edit', body).subscribe(
-            (tickets:any) => {
-               this.tickets = tickets
-               this.ticketsChanged.next(this.tickets.slice()) 
-            },
-            error => {
-              console.log(error)
-            }
-        )
-        
-    }
-
-    deleteTicket(_id:string){
-        
-        // format data
-        let body = {
-            _id: _id
-        }
-
-        // send request
-        this.http.post('https://prioritygame.herokuapp.com/tickets/delete', body).subscribe(
-            (tickets:any) => {
-               this.tickets = tickets
-               this.ticketsChanged.next(this.tickets.slice()) 
-            },
-            error => {
-              console.log(error)
-            }
-        )
-        
-    }
-
-    setTicketImpact(ticket:any, impact:number){
-
-        // format data
-        let body = {
-            _id: ticket._id,
-            impact: impact
-        }
-
-        // send request
-        this.http.post('https://prioritygame.herokuapp.com/tickets/change-impact', body).subscribe(
-            (tickets:any) => {
-                console.log(tickets)
-               this.tickets = tickets
-               this.ticketsChanged.next(this.tickets.slice()) 
-            },
-            error => {
-              console.log(error)
-            }
-        )
-    }
+    // send request and provide result data
+    this.http.post('https://prioritygame.herokuapp.com/tickets/change-impact', body)
+    .subscribe(
+      (tickets:any) => {
+        this.tickets = tickets
+        this.ticketsChanged.next(this.tickets.slice()) 
+      },
+      error => { console.log(error) }
+    )
+  }
 
 }

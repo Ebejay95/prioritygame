@@ -1,47 +1,63 @@
-import { Component, OnInit} from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { Ticket } from '../ticket.model';
-import { TicketService } from '../ticket.service';
-import { moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-import { Board } from '../board.model';
-import { Column } from '../column.model';
+import { Component, OnInit} from '@angular/core'
+import { Router } from '@angular/router'
+import { Subscription } from 'rxjs'
+import { Ticket } from '../../models/ticket.model'
+import { TicketService } from '../ticket.service'
+import { moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop'
+import { Board } from '../../models/board.model'
+import { Column } from '../../models/column.model'
 
 @Component({
   selector: 'app-ticket-board',
   templateUrl: './ticket-board.component.html',
   styleUrls: ['./ticket-board.component.css']
 })
+
 export class TicketBoardComponent implements OnInit{
 
-  board: Board = new Board('Inpact Board',[])
+  // create a board
+  board: Board = new Board('Impact Board',[])
 
-  constructor(private ticketService: TicketService, private router:Router) { }
-
-  ticketSubscription!:Subscription
+  // for dynamic creation of the boards columns
   numberOfColumns:number = 10
 
-  
-  ngOnInit(): void {
-    
-    this.ticketService.getAllTickets()
-    this.ticketSubscription = this.ticketService.ticketsChanged.subscribe(
-      (tickets:any) => {
-        this.buildBoard(tickets)
-      },
-      error => {
-        console.log(error)
-      }
-    )
+  // subscription to ticket service for backend interaction
+  ticketSubscription!:Subscription
+  constructor(private ticketService: TicketService, private router:Router) { }
 
+  
+  /**
+  * Oninit - Lifcycle funtion
+  * Get tickets, build board, and populate the tickets by impact
+  * @void
+  */
+  ngOnInit(): void {
+    this.ticketService.getAllTickets()
+    this.ticketSubscription = this.ticketService.ticketsChanged
+      .subscribe(
+        (tickets:any) => { this.buildBoard(tickets) },
+        error => { console.log(error) }
+      )
   }
   
-  buildBoard(tickets:Ticket[]){
+
+  /**
+  * Build the board from tickets and their impacts
+  * @param    {Ticket[]}    tickets  array of available tickets
+  * @return   {Observable}  get from HttpClient
+  */
+  buildBoard(tickets:Ticket[]): void {
+
+    // get all tickets without impact (new tickets)
     const newTickets = tickets.filter((ticket:Ticket) => ticket.impact === 0)
+
+    // prepopulate board with the new tickets column
     let dynamicColumns:Column[] = [
       new Column('NEU', newTickets)
     ]
-    for(let colIndex = 0 ; colIndex < this.numberOfColumns; colIndex++){
+
+    // dnamically add the default columns and their tickets by impact
+    for(let colIndex = 0 ; colIndex < this.numberOfColumns ; colIndex++){
       let ticketsOfColumn:Ticket[] = []
       tickets.forEach((ticket:Ticket) => {
         if(ticket.impact === colIndex+1){
@@ -51,25 +67,42 @@ export class TicketBoardComponent implements OnInit{
       dynamicColumns.push(new Column((colIndex+1).toString(), ticketsOfColumn))
     }
     this.board.columns = dynamicColumns
+  
   }
 
-  onEditTicket(ticket:any){ // Hier sei angemerkt, dass ich den Type für Typescript mit der uniquid von mongo nicht im Model eingebaut habe und das deshalb hier sonst einen Error wirft. Ehrlich gesagt wusste ich keinen anderen Workaround...
+
+  /**
+  * Navigate to edit form
+  * @param    {any}     ticket  (Ticket) interference beacause of _id (mongoDB - not in model)
+  * @void
+  */
+  onEditTicket(ticket:any): void { // Hier sei angemerkt, dass ich den Type für Typescript mit der uniquid von mongo nicht im Model eingebaut habe und das deshalb hier sonst einen Error wirft. Ehrlich gesagt wusste ich keinen anderen Workaround...
     this.router.navigate(['ticket/edit/' + ticket._id.toString()])
   }
   
-  onDeleteTicket(ticket:any){ // Hier sei angemerkt, dass ich den Type für Typescript mit der uniquid von mongo nicht im Model eingebaut habe und das deshalb hier sonst einen Error wirft. Ehrlich gesagt wusste ich keinen anderen Workaround...
+
+  /**
+  * Request ticket delete via ticket service and popupate results
+  * @param    {any}     ticket  (Ticket) interference beacause of _id (mongoDB - not in model)
+  * @void
+  */
+  onDeleteTicket(ticket:any): void { 
     this.ticketService.deleteTicket(ticket._id)
-    this.ticketSubscription = this.ticketService.ticketsChanged.subscribe(
-      (tickets:any) => {
-        this.buildBoard(tickets)
-      },
-      error => {
-        console.log(error)
-      }
-    )
+    this.ticketSubscription = this.ticketService.ticketsChanged
+      .subscribe(
+        (tickets:any) => { this.buildBoard(tickets) },
+        error => { console.log(error) }
+      )
   }
-  
-  drop(event: any) {
+
+
+  /**
+  * cdkDrag => ticket of board column
+  * Register drag, provide animation und functionality via cdk and send the data change to 
+  * mongoDB via ticket service
+  * @void
+  */
+  drop(event: any): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -78,20 +111,22 @@ export class TicketBoardComponent implements OnInit{
         event.container.data,
         event.previousIndex,
         event.currentIndex,
-      );
+      )
     }
 
     // send drop to db
     let droppedTicket = event.container.data[0]
     let newImpact = event.container.element.nativeElement.getAttribute('data-target')
-    this.moveTicket(droppedTicket, newImpact)
+    this.ticketService.setTicketImpact(droppedTicket, newImpact)
   }
-  
-  moveTicket(ticket:Ticket, impact:number){
-    this.ticketService.setTicketImpact(ticket, impact)
-  }
-  
-  ngOnDestroy(){
+
+
+  /**
+  * OnDestroy - Lifcycle funtion
+  * Unsubscribe Subscripton for performance
+  * @void
+  */
+  ngOnDestroy(): void {
     if(this.ticketSubscription)
     this.ticketSubscription.unsubscribe()
   }

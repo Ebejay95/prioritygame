@@ -1,106 +1,101 @@
-.modal-area {
-    background-color: beige;
-}
-
-.modal-area.active{
-    background-color: grey;
-}
-
+/* the board */
 .impact-row {
-    box-sizing: content-box;
-    min-height: 50px;
-    box-shadow: inset;
-    background: #f9f9f9;
-    position: relative;
-    margin-block-end: 5px;
-    transition: 0.2s;
-    padding: 2px 10px 2px 35px;
-    user-select: none;
-    border-radius: 4px;
-    -webkit-box-shadow: 0px 0px 3px 2px #ccc inset; 
-    box-shadow: 0px 0px 2px 2px #ccc inset;
+  box-sizing: content-box;
+  min-height: 50px;
+  box-shadow: inset;
+  background: #f9f9f9;
+  position: relative;
+  margin-block-end: 5px;
+  transition: 0.2s;
+  padding: 2px 10px 2px 35px;
+  user-select: none;
+  border-radius: 4px;
+  -webkit-box-shadow: 0px 0px 3px 2px #ccc inset; 
+  box-shadow: 0px 0px 2px 2px #ccc inset;
 }
 .impact-row.is-dragged-over{
-    -webkit-box-shadow: 0px 0px 3px 2px #ccc; 
-    box-shadow: 0px 0px 3px 2px #ccc;
+  -webkit-box-shadow: 0px 0px 3px 2px #ccc; 
+  box-shadow: 0px 0px 3px 2px #ccc;
 }
 .impact-row span {
-    font-size: 24px;
-    position: absolute;
-    top: 50%;
-    left: 5px;
-    transform: translateY(-50%);
-    color:#bbb
+  font-size: 24px;
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  color:#bbb
 }
 
 .new-tickets-section {
-    background-color: palegreen;
-    margin-block-end: 15px;
-    user-select: none;
-    position:relative;
-    min-height: 55px;
-    padding: 2px 10px 2px 35px;
+  background-color: palegreen;
+  margin-block-end: 15px;
+  user-select: none;
+  position:relative;
+  min-height: 55px;
+  padding: 2px 10px 2px 35px;
 }
 
 .new-tickets-section.no-new-tickets {
-    display: none;
+  display: none;
 }
 
 .new-tickets-section span {
-    color: green;
-    position: absolute;
-    padding: 6px;
-    transform: rotate(-90deg);
-    top: 13px;
-    left: -8px;
+  color: green;
+  position: absolute;
+  padding: 6px;
+  transform: rotate(-90deg);
+  top: 13px;
+  left: -8px;
 }
 
 .new-tickets-section .new-ticket-row {
-    box-sizing: content-box;
-    padding: 2px 10px 2px 35px;
+  box-sizing: content-box;
+  padding: 2px 10px 2px 35px;
 }
 
+/* the ticket in a board */
 .ticket {
-    background-color: #fff;
-    border-radius: 4px;
-    -webkit-box-shadow: 0px 0px 3px 2px #CCCCCC; 
-    box-shadow: 0px 0px 3px 2px #CCCCCC;
-    padding: 0px 8px;
-    position: relative;
-    display: inline-block;
-    margin: 5px;
-    user-select: none;
-    min-width: 170px;
+  background-color: #fff;
+  border-radius: 4px;
+  -webkit-box-shadow: 0px 0px 3px 2px #CCCCCC; 
+  box-shadow: 0px 0px 3px 2px #CCCCCC;
+  padding: 0px 8px;
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+  user-select: none;
+  min-width: 170px;
 }
 .ticket h4 {
-    font-size: 14px;
+  font-size: 14px;
 }
 .ticket p {
-    font-size: 10px;
+  font-size: 10px;
 }
 
 .ticket button.btn.btn-danger, button.btn {
-    position: absolute;
-    padding: 0 3px;
-    top:5px;
-    right:5px;
+  position: absolute;
+  padding: 0 3px;
+  top:5px;
+  right:5px;
 }
 
 .ticket button.btn.btn-primary {
-    position: absolute;
-    padding: 0 3px;
-    top:5px;
-    right:29px;
+  position: absolute;
+  padding: 0 3px;
+  top:5px;
+  right:29px;
 }
-h1,h2,h3,h4,h5,h6 {
-    margin-top: 5px;
-    margin-bottom: 0;
+.ticket h1,h2,h3,h4,h5,h6 {
+  margin-top: 5px;
+  margin-bottom: 0;
 }
-p {
-    margin-top: 0;
-    margin-bottom: 5px;
+.ticket p {
+  margin-top: 0;
+  margin-bottom: 5px;
 }
 
+/* Dragging animation */
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
