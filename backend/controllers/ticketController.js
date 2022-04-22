@@ -115,7 +115,7 @@ exports.postChangeImpactTicket = (req, res, next) => {
   const impact = (req.body.impact) ? req.body.impact : 0
 
   Ticket
-    .updateOne({sku: new ObjectId(id)}, {
+    .updateOne({_id: new ObjectId(id)}, {
       $set: {
         impact: impact
       }
