@@ -121,14 +121,14 @@ export class TicketService {
 
   /**
   * POST - edit a tickets impact
-  * @param  {any}     ticket  (Ticket) interference beacause of _id (mongoDB - not in model)
+  * @param  {string}     ticketId  (Ticket) interference beacause of _id (mongoDB - not in model)
   * @param  {string}  impact  tickets impact
   * @next {Ticket[]}  updated tickets from express backend server
   */
-  setTicketImpact(_id:string, impact:number): void {
+  setTicketImpact(ticketId:string, impact:number): void {
     // provide http body for request
     let body = {
-        _id: _id,
+        _id: ticketId,
         impact: impact
     }
 

@@ -20,7 +20,7 @@ export class TicketEditComponent implements OnInit {
   editing:boolean = false
 
   // the edited ticket is only set if this.editing=true
-  editedTicket!:any
+  editedTicket!:Ticket
 
   // reactive form group for angular form implementation
   ticketForm!:FormGroup

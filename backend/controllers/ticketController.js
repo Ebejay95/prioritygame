@@ -13,6 +13,10 @@ const ObjectId = require('mongodb').ObjectId
 const Ticket = require('./../models/ticket')
 
 
+// Provide validation tools for user inputs
+const { body, validationResult } = require('express-validator');
+
+
 // POST - add Ticket
 exports.postAddTicket = (req, res, next) => {
 
@@ -20,6 +24,15 @@ exports.postAddTicket = (req, res, next) => {
   const title = req.body.title
   const desc = req.body.desc
   const impact = (req.body.impact) ? req.body.impact : 0
+
+  // validate data
+  body('title').isLength({ min: 2 })
+  body('desc').isLength({ min: 10 })
+  
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
   // provide data schema for mongoDB
   const ticket = new Ticket({

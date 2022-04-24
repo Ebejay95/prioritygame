@@ -35,7 +35,7 @@ export class TicketBoardComponent implements OnInit{
     this.ticketService.getAllTickets()
     this.ticketSubscription = this.ticketService.ticketsChanged
       .subscribe(
-        (tickets:any) => { this.buildBoard(tickets) },
+        (tickets:Ticket[]) => { this.buildBoard(tickets) },
         error => { console.log(error) }
       )
   }
@@ -73,24 +73,24 @@ export class TicketBoardComponent implements OnInit{
 
   /**
   * Navigate to edit form
-  * @param    {any}     ticket  (Ticket) interference beacause of _id (mongoDB - not in model)
+  * @param    {Ticket}     ticket  (Ticket) interference beacause of _id (mongoDB - not in model)
   * @void
   */
-  onEditTicket(ticket:any): void { // Hier sei angemerkt, dass ich den Type für Typescript mit der uniquid von mongo nicht im Model eingebaut habe und das deshalb hier sonst einen Error wirft. Ehrlich gesagt wusste ich keinen anderen Workaround...
+  onEditTicket(ticket:Ticket): void { // Hier sei angemerkt, dass ich den Type für Typescript mit der uniquid von mongo nicht im Model eingebaut habe und das deshalb hier sonst einen Error wirft. Ehrlich gesagt wusste ich keinen anderen Workaround...
     this.router.navigate(['ticket/edit/' + ticket._id.toString()])
   }
   
 
   /**
   * Request ticket delete via ticket service and popupate results
-  * @param    {any}     ticket  (Ticket) interference beacause of _id (mongoDB - not in model)
+  * @param    {Ticket[]}     tickets
   * @void
   */
-  onDeleteTicket(ticket:any): void { 
+  onDeleteTicket(ticket:Ticket): void { 
     this.ticketService.deleteTicket(ticket._id)
     this.ticketSubscription = this.ticketService.ticketsChanged
       .subscribe(
-        (tickets:any) => { this.buildBoard(tickets) },
+        (tickets:Ticket[]) => { this.buildBoard(tickets) },
         error => { console.log(error) }
       )
   }
