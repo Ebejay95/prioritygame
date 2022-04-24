@@ -2,7 +2,7 @@ import { Component, OnInit} from '@angular/core'
 import { Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 import { Ticket } from '../../models/ticket.model'
-import { TicketService } from '../ticket.service'
+import { TicketService } from '../../services/ticket.service'
 import { moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop'
 import { Board } from '../../models/board.model'
 import { Column } from '../../models/column.model'
@@ -115,10 +115,9 @@ export class TicketBoardComponent implements OnInit{
     }
 
     // send drop to db
-    let droppedTicket = event.container.data[0]
+    let droppedTicketId = event.item.element.nativeElement.getAttribute('data-id')
     let newImpact = event.container.element.nativeElement.getAttribute('data-target')
-    console.log(newImpact)
-    this.ticketService.setTicketImpact(droppedTicket, newImpact)
+    this.ticketService.setTicketImpact(droppedTicketId, newImpact)
   }
 
 

@@ -101,7 +101,6 @@ exports.postDeleteTicket = (req, res, next) => {
 exports.postChangeImpactTicket = (req, res, next) => {
 
   // retrieve data from request
-  console.log(req.body)
   const _id = req.body._id
   const impact = (req.body.impact) ? req.body.impact : 0
 

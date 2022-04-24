@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 import { Ticket } from '../../models/ticket.model'
-import { TicketService } from '../ticket.service'
+import { TicketService } from '../../services/ticket.service'
 
 @Component({
   selector: 'app-ticket-edit',

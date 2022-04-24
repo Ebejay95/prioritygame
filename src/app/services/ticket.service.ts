@@ -125,10 +125,10 @@ export class TicketService {
   * @param  {string}  impact  tickets impact
   * @next {Ticket[]}  updated tickets from express backend server
   */
-  setTicketImpact(ticket:any, impact:number): void {
+  setTicketImpact(_id:string, impact:number): void {
     // provide http body for request
     let body = {
-        _id: ticket._id,
+        _id: _id,
         impact: impact
     }
 
