@@ -97,7 +97,7 @@ export class TicketService {
   * @param  {string}  impact  tickets impact
   * @next {Ticket[]}  updated tickets from express backend server
   */
-  setTicketImpact(ticketId:string, impact:number): void {
+  setTicketImpact(ticketId:string, impact:number): Observable<Ticket[]> {
     // provide http body for request
     let body = {
         _id: ticketId,
@@ -105,14 +105,6 @@ export class TicketService {
     }
 
     // send request and provide result data
-    this.http.post('https://prioritygame.herokuapp.com/tickets/change-impact', body)
-    .subscribe(
-      (tickets:any) => {
-        this.tickets = tickets
-        this.ticketsChanged.next(this.tickets.slice())
-      },
-      error => { console.log(error) }
-    )
+    return this.http.post<Ticket[]>('https://prioritygame.herokuapp.com/tickets/change-impact', body)
   }
-
 }
