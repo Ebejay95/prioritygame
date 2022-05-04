@@ -1,8 +1,6 @@
 import { Ticket } from "./ticket.model"
 
-export class Column {
-    constructor(
-        public name: string,
-        public tickets: Ticket[]
-    ){}
+export interface Column {
+  name: string
+  tickets: Ticket[]
 }
