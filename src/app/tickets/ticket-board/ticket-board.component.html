@@ -1,9 +1,8 @@
-<div cdkDropListGroup>
+<div cdkDropListGroup *ngIf="board$ | async as board">
   <div
     cdkDropList
-    [cdkDropListData]="column.tickets"
+    [cdkDropListData]="column"
     (cdkDropListDropped)="drop($event)"
-    [attr.data-target]="column.name"
     *ngFor="let column of board.columns; index as i"
     [ngClass]="{
       'impact-row': column.name !== 'NEU',
@@ -13,14 +12,15 @@
   >
       <span>{{column.name}}</span>
       <div
-        cdkDrag 
-        *ngFor="let ticket of column.tickets" 
+        cdkDrag
+        [cdkDragData]="{ ticketId: ticket._id, newImpact: column.name }"
+        *ngFor="let ticket of column.tickets"
         class="ticket"
         [attr.data-id]="ticket._id"
       >
         <h4>{{ticket.title | shorten:13}}</h4>
         <p>{{ticket.desc | shorten:22}}</p>
-        <button class="btn btn-primary" type="button" (click)="onEditTicket(ticket)">&#9998;</button>
+        <button class="btn btn-primary" type="button" [routerLink]="'/ticket/edit/' + ticket._id.toString()">&#9998;</button>
         <button class="btn btn-danger" type="button" (click)="onDeleteTicket(ticket)">&#10005;</button>
       </div>
   </div>

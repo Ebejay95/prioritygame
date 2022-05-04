@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { HttpClient } from '@angular/common/http'
+import {HttpClient, HttpResponse} from '@angular/common/http'
 import { Observable, Subject } from "rxjs"
 import { Ticket } from "../models/ticket.model"
 
@@ -30,15 +30,8 @@ export class TicketService {
   * GET - alltickets
   * @next {Ticket[]}  tickets from express backend server
   */
-  getAllTickets(): void {
-    this.http.get('https://prioritygame.herokuapp.com/tickets')
-      .subscribe(
-        (tickets:any) => {
-          this.tickets = tickets
-          this.ticketsChanged.next(this.tickets.slice()) 
-        },
-        error => { console.log(error) }
-      )
+  getAllTickets(): Observable<Ticket[]> {
+    return this.http.get<Ticket[]>('https://prioritygame.herokuapp.com/tickets')
   }
 
 
@@ -48,22 +41,15 @@ export class TicketService {
   * @param  {string}  desc    tickets desc
   * @next {Ticket[]}  updated tickets from express backend server
   */
-  addTicket(title:string, desc:string): void {
+  addTicket(title:string, desc:string): Observable<Ticket[]> {
     // provide http body for request
     let body = {
-        title: title, 
+        title: title,
         desc: desc
     }
 
     // send request and provide result data
-    this.http.post('https://prioritygame.herokuapp.com/tickets/add', body)
-      .subscribe(
-        (tickets:any) => {
-           this.tickets = tickets
-           this.ticketsChanged.next(this.tickets.slice()) 
-        },
-        error => { console.log(error) }
-      )  
+    return this.http.post<Ticket[]>('https://prioritygame.herokuapp.com/tickets/add', body)
   }
 
 
@@ -75,24 +61,17 @@ export class TicketService {
   * @param  {string}  impact  tickets impact
   * @next {Ticket[]}  updated tickets from express backend server
   */
-  editTicket(_id:string, title:string, desc:string, impact:number): void {
+  editTicket(_id:string, title:string, desc:string, impact:number): Observable<Ticket[]> {
     // provide http body for request
     let body = {
       _id: _id,
-      title: title, 
+      title: title,
       desc: desc,
       impact: impact
     }
-  
+
     // send request and provide result data
-    this.http.post('https://prioritygame.herokuapp.com/tickets/edit', body)
-      .subscribe(
-        (tickets:any) => {
-          this.tickets = tickets
-          this.ticketsChanged.next(this.tickets.slice()) 
-        },
-        error => { console.log(error) }
-      )   
+    return this.http.post<Ticket[]>('https://prioritygame.herokuapp.com/tickets/edit', body)
   }
 
 
@@ -101,21 +80,14 @@ export class TicketService {
   * @param  {string}  _id     tickets _id (mongoDB)
   * @next {Ticket[]}  updated tickets from express backend server
   */
-  deleteTicket(_id:string): void {
+  deleteTicket(_id:string) {
     // provide http body for request
     let body = {
         _id: _id
     }
 
     // send request and provide result data
-    this.http.post('https://prioritygame.herokuapp.com/tickets/delete', body)
-      .subscribe(
-        (tickets:any) => {
-          this.tickets = tickets
-          this.ticketsChanged.next(this.tickets.slice()) 
-        },
-        error => { console.log(error) }
-    )  
+    return this.http.post<Ticket[]>('https://prioritygame.herokuapp.com/tickets/delete', body)
   }
 
 
@@ -125,7 +97,7 @@ export class TicketService {
   * @param  {string}  impact  tickets impact
   * @next {Ticket[]}  updated tickets from express backend server
   */
-  setTicketImpact(ticketId:string, impact:number): void {
+  setTicketImpact(ticketId:string, impact:number): Observable<Ticket[]> {
     // provide http body for request
     let body = {
         _id: ticketId,
@@ -133,14 +105,6 @@ export class TicketService {
     }
 
     // send request and provide result data
-    this.http.post('https://prioritygame.herokuapp.com/tickets/change-impact', body)
-    .subscribe(
-      (tickets:any) => {
-        this.tickets = tickets
-        this.ticketsChanged.next(this.tickets.slice()) 
-      },
-      error => { console.log(error) }
-    )
+    return this.http.post<Ticket[]>('https://prioritygame.herokuapp.com/tickets/change-impact', body)
   }
-
 }
