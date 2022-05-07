@@ -1,16 +1,11 @@
 import { Component, OnInit} from '@angular/core'
 import { Router } from '@angular/router'
-import { Subject, map, Observable } from 'rxjs'
+import { Subject, map } from 'rxjs'
 import { Ticket } from '../../models/ticket.model'
 import { TicketService } from '../../services/ticket.service'
 import { moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop'
 import { Board } from '../../models/board.model'
 import { Column } from '../../models/column.model'
-
-import { Store } from '@ngrx/store'
-import { TicketState } from 'src/app/tickets/state/ticket.reducers'
-import { GetTickets } from 'src/app/tickets/state/ticket.actions'
-import { getTickets } from 'src/app/tickets/state/ticket.selectors'
 
 @Component({
   selector: 'app-ticket-board',
@@ -20,15 +15,17 @@ import { getTickets } from 'src/app/tickets/state/ticket.selectors'
 
 export class TicketBoardComponent implements OnInit{
 
+  tickets$: Subject<Ticket[]> = new Subject()
 
   // create a board
-  //board$ = this.tickets$.pipe(map(this.buildBoard))
+  board$ = this.tickets$.pipe(map(this.buildBoard))
+
+  // for dynamic creation of the boards columns
+  numberOfColumns:number = 10
 
   constructor(
-    public tickets: Observable<Ticket[]>,
-    private ticketStore: Store<TicketState>,
     private ticketService: TicketService,
-    private router:Router,
+    private router:Router
   ) { }
 
 
@@ -38,12 +35,9 @@ export class TicketBoardComponent implements OnInit{
   * @void
   */
   ngOnInit(): void {
-    this.ticketStore.dispatch(new GetTickets())
-    //this.ticketService.getAllTickets().subscribe(tickets => {
-    //  this.tickets$.next(tickets)
-    //})
-    this.tickets = this.ticketStore.select(getTickets)
-    console.log(this.tickets)
+    this.ticketService.getAllTickets().subscribe(tickets => {
+      this.tickets$.next(tickets)
+    })
   }
   
 
@@ -91,10 +85,10 @@ export class TicketBoardComponent implements OnInit{
   * @void
   */
   onDeleteTicket(ticket:Ticket): void {
-    //this.ticketService.deleteTicket(ticket._id)
-    //.subscribe((tickets) => {
-    //  this.tickets$.next(tickets)
-    //})
+    this.ticketService.deleteTicket(ticket._id)
+    .subscribe((tickets) => {
+      this.tickets$.next(tickets)
+    })
   }
 
 

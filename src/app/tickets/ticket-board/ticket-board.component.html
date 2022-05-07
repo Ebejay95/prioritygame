@@ -1,7 +1,7 @@
-<!--<div cdkDropListGroup  *ngIf="board$ | async as board">
+<div cdkDropListGroup  *ngIf="board$ | async as board">
   <div
     cdkDropList
-    [cdkDropListData]="column.tickets"
+    [cdkDropListData]="column"
     (cdkDropListDropped)="drop($event)"
     *ngFor="let column of board.columns; index as i"
     [ngClass]="{
@@ -23,4 +23,4 @@
         <button class="btn btn-danger" type="button" (click)="onDeleteTicket(ticket)">&#10005;</button>
       </div>
   </div>
-</div>-->
+</div>
