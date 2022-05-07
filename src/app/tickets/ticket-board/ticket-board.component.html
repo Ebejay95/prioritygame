@@ -3,7 +3,6 @@
     cdkDropList
     [cdkDropListData]="column.tickets"
     (cdkDropListDropped)="drop($event)"
-    [attr.data-target]="column.name"
     *ngFor="let column of board.columns; index as i"
     [ngClass]="{
       'impact-row': column.name !== 'NEU',
@@ -14,9 +13,9 @@
       <span>{{column.name}}</span>
       <div
         cdkDrag 
+        [cdkDragData]="{ ticketId: ticket._id, newImpact: column.name }"
         *ngFor="let ticket of column.tickets" 
         class="ticket"
-        [attr.data-id]="ticket._id"
       >
         <h4>{{ticket.title | shorten:13}}</h4>
         <p>{{ticket.desc | shorten:22}}</p>

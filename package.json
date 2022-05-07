@@ -6,6 +6,7 @@
     "start": "nodemon backend/app",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "dev": "ng serve --watch --configuration development",
     "test": "ng test",
     "heroku-postbuild": "npm install"
   },

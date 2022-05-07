@@ -106,19 +106,22 @@ export class TicketBoardComponent implements OnInit{
   */
   drop(event: any): void {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex)
+      moveItemInArray(event.container.data.tickets, event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
+        event.previousContainer.data.tickets,
+        event.container.data.tickets,
         event.previousIndex,
         event.currentIndex,
       )
     }
 
     // send drop to db
-    const droppedTicketId = event.item.element.nativeElement.getAttribute('data-id')
-    const newImpact = event.container.element.nativeElement.getAttribute('data-target')
-    this.ticketService.setTicketImpact(droppedTicketId, newImpact)
+    const droppedTicketId = event.item.data?.ticketId
+    const newImpact = event.container.data?.name
+    if (droppedTicketId && newImpact) {
+      this.ticketService.setTicketImpact(droppedTicketId, Number(newImpact))
+        .subscribe(tickets => this.tickets$.next(tickets))
+    }
   }
 }
