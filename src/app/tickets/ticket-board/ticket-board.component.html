@@ -1,4 +1,4 @@
-<div cdkDropListGroup>
+<!--<div cdkDropListGroup  *ngIf="board$ | async as board">
   <div
     cdkDropList
     [cdkDropListData]="column.tickets"
@@ -20,8 +20,8 @@
       >
         <h4>{{ticket.title | shorten:13}}</h4>
         <p>{{ticket.desc | shorten:22}}</p>
-        <button class="btn btn-primary" type="button" (click)="onEditTicket(ticket)">&#9998;</button>
+        <button class="btn btn-primary" type="button" [routerLink]="'/ticket/edit/' + ticket._id.toString()">&#9998;</button>
         <button class="btn btn-danger" type="button" (click)="onDeleteTicket(ticket)">&#10005;</button>
       </div>
   </div>
-</div>
+</div>-->

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
-import { Subscription } from 'rxjs'
 import { Ticket } from '../../models/ticket.model'
 import { TicketService } from '../../services/ticket.service'
 
@@ -25,9 +24,6 @@ export class TicketEditComponent implements OnInit {
   // reactive form group for angular form implementation
   ticketForm!:FormGroup
 
-  // subscription to ticket service for backend interaction
-  ticketSubscription!:Subscription
-
   constructor(
     private route:ActivatedRoute,
     private ticketService:TicketService,
@@ -44,7 +40,7 @@ export class TicketEditComponent implements OnInit {
     this.route.params.subscribe( params => {
 
       // is in edit mode
-      if(params['id']){
+      if (params['id']){
         this.editing = true
         this.ticketService.getTicket(params['id']).subscribe(
           (ticket:any) => {
@@ -58,8 +54,8 @@ export class TicketEditComponent implements OnInit {
 
     // provide the form at any time
     this.ticketForm = new FormGroup({
-      title: new FormControl('', [Validators.required]),
-      desc: new FormControl('', [Validators.required])
+      title: new FormControl('', [Validators.required, Validators.minLength(2)]),
+      desc: new FormControl('', [Validators.required, Validators.minLength(10)])
     })
 
   }
@@ -71,43 +67,28 @@ export class TicketEditComponent implements OnInit {
   * @next {Ticket[]} updated tickets from express backend server
   */
   onSubmit(): void {
-    if(this.ticketForm.valid){
+    if (this.ticketForm.valid){
       const formData = this.ticketForm.value
-      if(this.editing){
+      if (this.editing){
 
         // edit ticket by forms data and popupate results
-        this.ticketService.editTicket(this.editedTicket._id,formData.title,formData.desc,this.editedTicket.impact)
-        this.ticketSubscription = this.ticketService.ticketsChanged
-          .subscribe(
-            tickets => { this.tickets = tickets },
-            error => { console.log(error) }
-          )
-
+        this.ticketService
+          .editTicket(this.editedTicket._id,formData.title,formData.desc,this.editedTicket.impact)
+          .subscribe(async (tickets) => {
+            // navigate to board
+            await this.router.navigate(['../'])
+          },
+          (error) => { console.error(error) }
+        )
       } else {
-
         // create ticket by forms data and popupate results
         this.ticketService.addTicket(formData.title,formData.desc)
-        this.ticketSubscription = this.ticketService.ticketsChanged
-          .subscribe(
-            tickets => { this.tickets = tickets },
-            error => { console.log(error) }
-          )
-
+        .subscribe(async (tickets) => {
+            await this.router.navigate(['../'])
+          },
+          (error) => { console.log(error) }
+        )
       }
-
-      // navigate to board
-      this.router.navigate(['../'])
-
     }
-  }
-
-  /**
-  * OnDestroy - Lifcycle funtion
-  * Unsubscribe Subscripton for performance
-  * @void
-  */
-  ngOnDestroy(): void {
-    if(this.ticketSubscription)
-    this.ticketSubscription.unsubscribe()
   }
 }

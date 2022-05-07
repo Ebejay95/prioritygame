@@ -13,7 +13,7 @@ export class ShortenPipe implements PipeTransform {
   * @return   {string}         shortened string by limit
   */
   transform(value: any, limit: number): string  {
-    if(value.length > limit){
+    if (value.length > limit){
         return value.substr(0,limit) + '...'
     }
     return value

@@ -1,11 +1,16 @@
 import { Component, OnInit} from '@angular/core'
 import { Router } from '@angular/router'
-import { Subscription } from 'rxjs'
+import { Subject, map, Observable } from 'rxjs'
 import { Ticket } from '../../models/ticket.model'
 import { TicketService } from '../../services/ticket.service'
 import { moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop'
 import { Board } from '../../models/board.model'
 import { Column } from '../../models/column.model'
+
+import { Store } from '@ngrx/store'
+import { TicketState } from 'src/app/tickets/state/ticket.reducers'
+import { GetTickets } from 'src/app/tickets/state/ticket.actions'
+import { getTickets } from 'src/app/tickets/state/ticket.selectors'
 
 @Component({
   selector: 'app-ticket-board',
@@ -15,15 +20,16 @@ import { Column } from '../../models/column.model'
 
 export class TicketBoardComponent implements OnInit{
 
+
   // create a board
-  board: Board = new Board('Impact Board',[])
+  //board$ = this.tickets$.pipe(map(this.buildBoard))
 
-  // for dynamic creation of the boards columns
-  numberOfColumns:number = 10
-
-  // subscription to ticket service for backend interaction
-  ticketSubscription!:Subscription
-  constructor(private ticketService: TicketService, private router:Router) { }
+  constructor(
+    public tickets: Observable<Ticket[]>,
+    private ticketStore: Store<TicketState>,
+    private ticketService: TicketService,
+    private router:Router,
+  ) { }
 
 
   /**
@@ -32,12 +38,12 @@ export class TicketBoardComponent implements OnInit{
   * @void
   */
   ngOnInit(): void {
-    this.ticketService.getAllTickets()
-    this.ticketSubscription = this.ticketService.ticketsChanged
-      .subscribe(
-        (tickets:Ticket[]) => { this.buildBoard(tickets) },
-        error => { console.log(error) }
-      )
+    this.ticketStore.dispatch(new GetTickets())
+    //this.ticketService.getAllTickets().subscribe(tickets => {
+    //  this.tickets$.next(tickets)
+    //})
+    this.tickets = this.ticketStore.select(getTickets)
+    console.log(this.tickets)
   }
   
 
@@ -46,65 +52,61 @@ export class TicketBoardComponent implements OnInit{
   * @param    {Ticket[]}    tickets  array of available tickets
   * @return   {Observable}  get from HttpClient
   */
-  buildBoard(tickets:Ticket[]): void {
-
-    // get all tickets without impact (new tickets)
-    const newTickets = tickets.filter((ticket:Ticket) => ticket.impact === 0)
-
-    // prepopulate board with the new tickets column
-    let dynamicColumns:Column[] = [
-      new Column('NEU', newTickets)
-    ]
+  buildBoard(tickets: Ticket[]): Board {
+    let columns: Column[] = []
 
     // dnamically add the default columns and their tickets by impact
-    for(let colIndex = 0 ; colIndex < this.numberOfColumns ; colIndex++){
-      let ticketsOfColumn:Ticket[] = []
+    for (let colIndex = 0 ; colIndex < 11 ; colIndex++) {
+      const ticketsOfColumn:Ticket[] = []
       tickets.forEach((ticket:Ticket) => {
-        if(ticket.impact === colIndex+1){
+        if (ticket.impact === colIndex) {
           ticketsOfColumn.push(ticket)
         }
+      })      
+      columns.push({
+        name: `${colIndex}`,
+        tickets: ticketsOfColumn
       })
-      dynamicColumns.push(new Column((colIndex+1).toString(), ticketsOfColumn))
     }
-    this.board.columns = dynamicColumns
+
+    // if no new tickets with impact 0, remove 0-th col
+    if (columns[0].tickets.length === 0) {
+      columns = columns.splice(1)
+    } else {
+      // otherwise rename 0-th col to new
+      columns[0].name = 'NEU'
+    }
+
+    return {
+      name: 'Impact Board',
+      columns
+    }
   
   }
 
-
-  /**
-  * Navigate to edit form
-  * @param    {Ticket}     ticket  (Ticket) interference beacause of _id (mongoDB - not in model)
-  * @void
-  */
-  onEditTicket(ticket:Ticket): void { // Hier sei angemerkt, dass ich den Type für Typescript mit der uniquid von mongo nicht im Model eingebaut habe und das deshalb hier sonst einen Error wirft. Ehrlich gesagt wusste ich keinen anderen Workaround...
-    this.router.navigate(['ticket/edit/' + ticket._id.toString()])
-  }
-  
 
   /**
   * Request ticket delete via ticket service and popupate results
-  * @param    {Ticket[]}     tickets
+  * @param    {Ticket}     ticket
   * @void
   */
-  onDeleteTicket(ticket:Ticket): void { 
-    this.ticketService.deleteTicket(ticket._id)
-    this.ticketSubscription = this.ticketService.ticketsChanged
-      .subscribe(
-        (tickets:Ticket[]) => { this.buildBoard(tickets) },
-        error => { console.log(error) }
-      )
+  onDeleteTicket(ticket:Ticket): void {
+    //this.ticketService.deleteTicket(ticket._id)
+    //.subscribe((tickets) => {
+    //  this.tickets$.next(tickets)
+    //})
   }
 
 
   /**
   * cdkDrag => ticket of board column
-  * Register drag, provide animation und functionality via cdk and send the data change to 
+  * Register drag, provide animation und functionality via cdk and send the data change to
   * mongoDB via ticket service
   * @void
   */
   drop(event: any): void {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex)
     } else {
       transferArrayItem(
         event.previousContainer.data,
@@ -115,19 +117,8 @@ export class TicketBoardComponent implements OnInit{
     }
 
     // send drop to db
-    let droppedTicketId = event.item.element.nativeElement.getAttribute('data-id')
-    let newImpact = event.container.element.nativeElement.getAttribute('data-target')
+    const droppedTicketId = event.item.element.nativeElement.getAttribute('data-id')
+    const newImpact = event.container.element.nativeElement.getAttribute('data-target')
     this.ticketService.setTicketImpact(droppedTicketId, newImpact)
-  }
-
-
-  /**
-  * OnDestroy - Lifcycle funtion
-  * Unsubscribe Subscripton for performance
-  * @void
-  */
-  ngOnDestroy(): void {
-    if(this.ticketSubscription)
-    this.ticketSubscription.unsubscribe()
   }
 }
