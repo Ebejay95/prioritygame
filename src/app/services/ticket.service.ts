@@ -1,19 +1,14 @@
-import { Injectable } from "@angular/core"
-import { HttpClient, HttpResponse } from '@angular/common/http'
-import { Observable, Subject } from "rxjs"
-import { Ticket } from "../models/ticket.model"
-
-@Injectable({providedIn: 'root'})
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+ 
+import { Observable } from 'rxjs';
+import { Ticket } from '../models/ticket.model';
+ 
+@Injectable({ providedIn: 'root' })
 
 export class TicketService {
 
-  // subject to populate services data to any component
-  ticketsChanged = new Subject<Ticket[]>()
-
-  // general ticket array for service
-  tickets:Ticket[] = []
-
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /**
   * GET - ticket by id
@@ -21,7 +16,7 @@ export class TicketService {
   * @param    {string}      ticketId   tickets id
   * @return   {Observable}  get from HttpClient
   */
-  getTicket(ticketId:string): Observable<Ticket> {
+   getTicket(ticketId:string): Observable<Ticket> {
     return this.http.get<Ticket>('https://prioritygame.herokuapp.com/tickets/' + ticketId)
   }
 
@@ -47,7 +42,7 @@ export class TicketService {
         title: title,
         desc: desc
     }
-
+    console.log(body);
     // send request and provide result data
     return this.http.post<Ticket[]>('https://prioritygame.herokuapp.com/tickets/add', body)
   }
@@ -87,7 +82,7 @@ export class TicketService {
     }
 
     // send request and provide result data
-    return this.http.post<Ticket[]>('https://prioritygame.herokuapp.com/tickets/delete', body);
+    return this.http.post<Ticket[]>('https://prioritygame.herokuapp.com/tickets/delete', body)
   }
 
 
@@ -107,5 +102,4 @@ export class TicketService {
     // send request and provide result data
     return this.http.post<Ticket[]>('https://prioritygame.herokuapp.com/tickets/change-impact', body)
   }
-
 }

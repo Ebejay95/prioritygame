@@ -1,12 +1,13 @@
-import { Component, OnInit} from '@angular/core'
-import { Router } from '@angular/router'
-import { Subject, map } from 'rxjs'
-import { Ticket } from '../../models/ticket.model'
-import { TicketService } from '../../services/ticket.service'
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Ticket } from 'src/app/models/ticket.model';
+import { TicketService } from 'src/app/services/ticket.service';
+
 import { moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop'
 import { Board } from '../../models/board.model'
 import { Column } from '../../models/column.model'
-
+import { getAllTickets } from '../state/tickets.actions';
+ 
 @Component({
   selector: 'app-ticket-board',
   templateUrl: './ticket-board.component.html',
@@ -15,19 +16,16 @@ import { Column } from '../../models/column.model'
 
 export class TicketBoardComponent implements OnInit{
 
-  tickets$: Subject<Ticket[]> = new Subject()
-
+  // ticket sync from ngrx store
+  tickets$ = this.store.dispatch(getAllTickets());
+   
   // create a board
-  board$ = this.tickets$.pipe(map(this.buildBoard))
-
-  // for dynamic creation of the boards columns
-  numberOfColumns:number = 10
+  //board$ = this.tickets$.pipe(map(this.buildBoard))
 
   constructor(
     private ticketService: TicketService,
-    private router:Router
-  ) { }
-
+    private store: Store
+  ) {}
 
   /**
   * Oninit - Lifcycle funtion
@@ -35,12 +33,9 @@ export class TicketBoardComponent implements OnInit{
   * @void
   */
   ngOnInit(): void {
-    this.ticketService.getAllTickets().subscribe(tickets => {
-      this.tickets$.next(tickets)
-    })
+    console.log(this.tickets$)
   }
   
-
   /**
   * Build the board from tickets and their impacts
   * @param    {Ticket[]}    tickets  array of available tickets
@@ -85,10 +80,7 @@ export class TicketBoardComponent implements OnInit{
   * @void
   */
   onDeleteTicket(ticket:Ticket): void {
-    this.ticketService.deleteTicket(ticket._id)
-    .subscribe((tickets) => {
-      this.tickets$.next(tickets)
-    })
+    //this.store.dispatch(deleteTicket({_id: ticket._id}))
   }
 
 
@@ -115,7 +107,6 @@ export class TicketBoardComponent implements OnInit{
     const newImpact = event.container.data?.name
     if (droppedTicketId && newImpact) {
       this.ticketService.setTicketImpact(droppedTicketId, Number(newImpact))
-        .subscribe(tickets => this.tickets$.next(tickets))
     }
   }
 }

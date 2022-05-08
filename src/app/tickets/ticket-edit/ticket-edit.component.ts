@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
+import { Store } from '@ngrx/store'
 import { Ticket } from '../../models/ticket.model'
 import { TicketService } from '../../services/ticket.service'
 
@@ -27,7 +28,8 @@ export class TicketEditComponent implements OnInit {
   constructor(
     private route:ActivatedRoute,
     private ticketService:TicketService,
-    private router:Router
+    private router:Router,
+    private store:Store
   ) { }
 
   /**
@@ -42,12 +44,6 @@ export class TicketEditComponent implements OnInit {
       // is in edit mode
       if (params['id']){
         this.editing = true
-        this.ticketService.getTicket(params['id']).subscribe(
-          (ticket:any) => {
-            this.ticketForm.setValue({'title': ticket.title, 'desc': ticket.desc})
-            this.editedTicket = ticket
-          }
-        )
       }
   
     })
@@ -67,27 +63,15 @@ export class TicketEditComponent implements OnInit {
   * @next {Ticket[]} updated tickets from express backend server
   */
   onSubmit(): void {
+    console.log('submit')
     if (this.ticketForm.valid){
       const formData = this.ticketForm.value
       if (this.editing){
-
+        console.log('editTicket')
         // edit ticket by forms data and popupate results
-        this.ticketService
-          .editTicket(this.editedTicket._id,formData.title,formData.desc,this.editedTicket.impact)
-          .subscribe(async (tickets) => {
-            // navigate to board
-            await this.router.navigate(['../'])
-          },
-          (error) => { console.error(error) }
-        )
       } else {
+        console.log('addTicket')
         // create ticket by forms data and popupate results
-        this.ticketService.addTicket(formData.title,formData.desc)
-        .subscribe(async (tickets) => {
-            await this.router.navigate(['../'])
-          },
-          (error) => { console.log(error) }
-        )
       }
     }
   }
