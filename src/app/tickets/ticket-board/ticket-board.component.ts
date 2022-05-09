@@ -18,14 +18,14 @@ import { map, Subject } from 'rxjs';
 export class TicketBoardComponent implements OnInit{
 
   // ticket sync from ngrx store
-  tickets$: Subject<{tickets: []}> = new Subject()
+  tickets$: Subject<Ticket[]> = new Subject()
    
   // create a board
-  board$ = this.tickets$.pipe(map(this.buildBoard))
+  board$ = this.tickets$.subscribe((tickets:{tickets: Ticket[]}) => {this.buildBoard(tickets.tickets)})
 
   constructor(
     private ticketService: TicketService,
-    private store: Store
+    private store: Store<{tickets: Ticket[]}>
   ) {}
 
   /**
@@ -35,9 +35,8 @@ export class TicketBoardComponent implements OnInit{
   */
   ngOnInit(): void {
     this.store.dispatch(getAllTickets())
-    this.store.subscribe((store: {tickets: []}) => {
-      console.log(store)
-      this.tickets$.next(store)
+    this.store.subscribe((store) => {
+      this.tickets$.next(store.tickets)
     })
   }
   
@@ -46,13 +45,15 @@ export class TicketBoardComponent implements OnInit{
   * @param    {Ticket[]}    tickets  array of available tickets
   * @return   {Observable}  get from HttpClient
   */
-  buildBoard(tickets: {tickets: []}): Board {
+  buildBoard(tickets: {tickets: Ticket[]}): Board {
     let columns: Column[] = []
 
+    console.log('buildboard')
+    console.log(tickets.tickets)
     // dnamically add the default columns and their tickets by impact
     for (let colIndex = 0 ; colIndex < 11 ; colIndex++) {
       const ticketsOfColumn:Ticket[] = []
-      tickets.forEach((ticket:Ticket) => {
+      tickets.tickets.forEach((ticket:Ticket) => {
         if (ticket.impact === colIndex) {
           ticketsOfColumn.push(ticket)
         }
