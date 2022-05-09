@@ -4,39 +4,20 @@ import { HttpClient } from '@angular/common/http';
 import { Ticket } from "src/app/models/ticket.model";
 
 import { Injectable } from "@angular/core";
-import { getAllTickets, getAllTicketsSuccess, getTicket } from "./tickets.actions";
+import { getAllTickets, getAllTicketsError, getAllTicketsSuccess } from "./tickets.actions";
+import { TicketService } from "src/app/services/ticket.service";
 
 @Injectable()
 export class TicketEffects {
-    getTicket$ = createEffect(()  => this.actions$.pipe(
-        ofType(getTicket),
-        //map((ticketId: getTicket) => {
-            //return this.http.get<Ticket>('https://prioritygame.herokuapp.com/tickets/' + ticketId)
-            //.pipe(
-            //    map((ticket:Ticket) => {
-            //    return of(new TicketActions.GetTicketSuccess({ticket: ticket}))
-            //    }),
-            //    catchError((error:any) => {
-            //        return of()
-            //    })
-            //)
-        //})
-    ))
+    getAllTickets$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType('[Tickets] Get all Tickets'),
+        switchMap(() => this.ticketService.getAllTickets().pipe(
+          map(tickets => getAllTicketsSuccess({tickets})),
+          catchError(() => of(getAllTicketsError()))
+        ))
+      )
+    );
 
-    getAllTickets = this.actions$.pipe(
-        ofType(getAllTickets),
-        switchMap(()=>{
-            console.log('effect: getAllTickets')
-            return this.http.get<Ticket[]>('https://prioritygame.herokuapp.com/tickets').pipe(
-                map(tickets => {
-                    console.log(tickets)
-                    return getAllTicketsSuccess({tickets})
-                }),
-                catchError(error => {
-                  return of();
-                })
-            )
-        })
-    )
-    constructor(private actions$: Actions, private http: HttpClient) {}
+    constructor(private actions$: Actions, private http: HttpClient, private ticketService: TicketService) {}
 }

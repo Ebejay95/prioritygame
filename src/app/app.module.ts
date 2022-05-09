@@ -15,6 +15,8 @@ import { StoreModule } from '@ngrx/store'
 import { ticketReducer } from './tickets/state/tickets.reducer'
 import { EffectsModule } from '@ngrx/effects'
 import { TicketEffects } from './tickets/state/tickets.effects'
+import { StoreDevtoolsModule } from '@ngrx/store-devtools'
+import { environment } from '../environments/environment'
 
 @NgModule({
   declarations: [
@@ -29,6 +31,11 @@ import { TicketEffects } from './tickets/state/tickets.effects'
     BrowserModule,
     StoreModule.forRoot({ tickets: ticketReducer }),
     EffectsModule.forRoot([TicketEffects]),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+      autoPause: true, // Pauses recording actions and state changes when the extension window is not open
+    }),
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,

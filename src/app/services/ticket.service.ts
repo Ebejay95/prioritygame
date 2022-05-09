@@ -42,7 +42,6 @@ export class TicketService {
         title: title,
         desc: desc
     }
-    console.log(body);
     // send request and provide result data
     return this.http.post<Ticket[]>('https://prioritygame.herokuapp.com/tickets/add', body)
   }
