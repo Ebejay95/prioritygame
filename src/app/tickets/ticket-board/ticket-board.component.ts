@@ -7,6 +7,7 @@ import { moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop'
 import { Board } from '../../models/board.model'
 import { Column } from '../../models/column.model'
 import { getAllTickets } from '../state/tickets.actions';
+import { map, Subject } from 'rxjs';
  
 @Component({
   selector: 'app-ticket-board',
@@ -17,10 +18,10 @@ import { getAllTickets } from '../state/tickets.actions';
 export class TicketBoardComponent implements OnInit{
 
   // ticket sync from ngrx store
-  tickets$ = this.store.dispatch(getAllTickets());
+  tickets$: Subject<{tickets: []}> = new Subject()
    
   // create a board
-  //board$ = this.tickets$.pipe(map(this.buildBoard))
+  board$ = this.tickets$.pipe(map(this.buildBoard))
 
   constructor(
     private ticketService: TicketService,
@@ -33,7 +34,11 @@ export class TicketBoardComponent implements OnInit{
   * @void
   */
   ngOnInit(): void {
-    console.log(this.tickets$)
+    this.store.dispatch(getAllTickets())
+    this.store.subscribe((store: {tickets: []}) => {
+      console.log(store)
+      this.tickets$.next(store)
+    })
   }
   
   /**
@@ -41,7 +46,7 @@ export class TicketBoardComponent implements OnInit{
   * @param    {Ticket[]}    tickets  array of available tickets
   * @return   {Observable}  get from HttpClient
   */
-  buildBoard(tickets: Ticket[]): Board {
+  buildBoard(tickets: {tickets: []}): Board {
     let columns: Column[] = []
 
     // dnamically add the default columns and their tickets by impact

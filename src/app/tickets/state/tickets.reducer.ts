@@ -1,7 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { getAllTickets, getAllTicketsSuccess, getAllTicketsError } from './tickets.actions';
-import { Ticket } from 'src/app/models/ticket.model';
+import { getAllTicketsSuccess } from './tickets.actions';
 
 const initialState = {};
 
